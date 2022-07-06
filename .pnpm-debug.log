@@ -1,0 +1,246 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 debug pnpm:package-manifest": {
+    "initial": {
+      "name": "budget-app-v2",
+      "version": "0.0.1",
+      "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "package": "svelte-kit package",
+        "preview": "vite preview",
+        "prepare": "svelte-kit sync",
+        "check": "svelte-check --tsconfig ./tsconfig.json",
+        "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+        "lint": "prettier --check --plugin-search-dir=. . && eslint .",
+        "format": "prettier --write --plugin-search-dir=. ."
+      },
+      "devDependencies": {
+        "@sveltejs/adapter-auto": "next",
+        "@sveltejs/kit": "next",
+        "@typescript-eslint/eslint-plugin": "^5.27.0",
+        "@typescript-eslint/parser": "^5.27.0",
+        "eslint": "^8.16.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-svelte3": "^4.0.0",
+        "prettier": "^2.6.2",
+        "prettier-plugin-svelte": "^2.7.0",
+        "svelte": "^3.44.0",
+        "svelte-check": "^2.7.1",
+        "svelte-preprocess": "^4.10.6",
+        "tslib": "^2.3.1",
+        "typescript": "^4.7.2",
+        "vite": "^2.9.13"
+      },
+      "type": "module"
+    },
+    "prefix": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2"
+  },
+  "2 debug pnpm:context": {
+    "currentLockfileExists": false,
+    "storeDir": "C:\\Users\\Snidd\\.pnpm-store\\v3",
+    "virtualStoreDir": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2\\node_modules\\.pnpm"
+  },
+  "3 debug pnpm:stage": {
+    "prefix": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "stage": "resolution_started"
+  },
+  "4 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/prettier-plugin-svelte/2.7.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "prettier-plugin-svelte",
+      "rawSpec": "^2.7.0"
+    }
+  },
+  "5 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/prettier-plugin-svelte/2.7.0",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "resolved"
+  },
+  "6 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/tslib/2.4.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "tslib",
+      "rawSpec": "^2.3.1"
+    }
+  },
+  "7 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/tslib/2.4.0",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "resolved"
+  },
+  "8 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/tslib/2.4.0",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "found_in_store"
+  },
+  "9 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/eslint-plugin-svelte3/4.0.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "eslint-plugin-svelte3",
+      "rawSpec": "^4.0.0"
+    }
+  },
+  "10 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/eslint-plugin-svelte3/4.0.0",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "resolved"
+  },
+  "11 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/@sveltejs/adapter-auto/1.0.0-next.54",
+    "wanted": {
+      "dependentId": ".",
+      "name": "@sveltejs/adapter-auto",
+      "rawSpec": "next"
+    }
+  },
+  "12 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@sveltejs/adapter-auto/1.0.0-next.54",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "resolved"
+  },
+  "13 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/prettier/2.7.1",
+    "wanted": {
+      "dependentId": ".",
+      "name": "prettier",
+      "rawSpec": "^2.6.2"
+    }
+  },
+  "14 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/prettier/2.7.1",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "resolved"
+  },
+  "15 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/prettier-plugin-svelte/2.7.0",
+    "size": 49476,
+    "status": "started"
+  },
+  "16 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/eslint-plugin-svelte3/4.0.0",
+    "size": 13112,
+    "status": "started"
+  },
+  "17 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/prettier-plugin-svelte/2.7.0",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "fetched"
+  },
+  "18 debug pnpm:update-check": {
+    "currentVersion": "6.29.0",
+    "latestVersion": "7.5.0"
+  },
+  "19 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/eslint-plugin-svelte3/4.0.0",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "fetched"
+  },
+  "20 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/eslint-config-prettier/8.5.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "eslint-config-prettier",
+      "rawSpec": "^8.3.0"
+    }
+  },
+  "21 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/eslint-config-prettier/8.5.0",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "resolved"
+  },
+  "22 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/svelte-preprocess/4.10.7",
+    "wanted": {
+      "dependentId": ".",
+      "name": "svelte-preprocess",
+      "rawSpec": "^4.10.6"
+    }
+  },
+  "23 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/svelte-preprocess/4.10.7",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "resolved"
+  },
+  "24 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/eslint-config-prettier/8.5.0",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "found_in_store"
+  },
+  "25 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/prettier/2.7.1",
+    "size": 3977924,
+    "status": "started"
+  },
+  "26 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/@sveltejs/adapter-auto/1.0.0-next.54",
+    "size": 2473,
+    "status": "started"
+  },
+  "27 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/@sveltejs/adapter-auto/1.0.0-next.54",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "fetched"
+  },
+  "28 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/svelte-preprocess/4.10.7",
+    "size": 22985,
+    "status": "started"
+  },
+  "29 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/svelte-preprocess/4.10.7",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "fetched"
+  },
+  "30 debug pnpm:_dependency_resolved": {
+    "resolution": "registry.npmjs.org/svelte/3.48.0",
+    "wanted": {
+      "dependentId": ".",
+      "name": "svelte",
+      "rawSpec": "^3.44.0"
+    }
+  },
+  "31 debug pnpm:progress": {
+    "packageId": "registry.npmjs.org/svelte/3.48.0",
+    "requester": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2",
+    "status": "resolved"
+  },
+  "32 warn pnpm:install-check": {
+    "message": "Unsupported engine for registry.npmjs.org/@sveltejs/kit/1.0.0-next.360: wanted: {\"node\":\">=16.7\"} (current: {\"node\":\"v14.17.0\",\"pnpm\":\"6.29.0\"})",
+    "prefix": "C:\\Users\\Snidd\\Dev\\HomeProjects\\budget-app-v2"
+  },
+  "33 error pnpm": {
+    "code": "ERR_PNPM_UNSUPPORTED_ENGINE",
+    "packageId": "registry.npmjs.org/@sveltejs/kit/1.0.0-next.360",
+    "wanted": {
+      "node": ">=16.7"
+    },
+    "current": {
+      "node": "v14.17.0",
+      "pnpm": "6.29.0"
+    },
+    "pkgsStack": [],
+    "err": {
+      "name": "pnpm",
+      "message": "Unsupported engine for registry.npmjs.org/@sveltejs/kit/1.0.0-next.360: wanted: {\"node\":\">=16.7\"} (current: {\"node\":\"v14.17.0\",\"pnpm\":\"6.29.0\"})",
+      "code": "ERR_PNPM_UNSUPPORTED_ENGINE",
+      "stack": "pnpm: Unsupported engine for registry.npmjs.org/@sveltejs/kit/1.0.0-next.360: wanted: {\"node\":\">=16.7\"} (current: {\"node\":\"v14.17.0\",\"pnpm\":\"6.29.0\"})\n    at checkEngine (C:\\snapshot\\dist\\pnpm.cjs)\n    at checkPackage (C:\\snapshot\\dist\\pnpm.cjs)\n    at packageIsInstallable (C:\\snapshot\\dist\\pnpm.cjs)\n    at resolveAndFetch (C:\\snapshot\\dist\\pnpm.cjs)\n    at runMicrotasks (<anonymous>)\n    at processTicksAndRejections (internal/process/task_queues.js:95:5)\n    at async resolveDependency (C:\\snapshot\\dist\\pnpm.cjs)\n    at async resolveDependenciesOfDependency (C:\\snapshot\\dist\\pnpm.cjs)\n    at async Promise.all (index 1)\n    at async resolveDependencies (C:\\snapshot\\dist\\pnpm.cjs)"
+    }
+  },
+  "34 debug pnpm:fetching-progress": {
+    "attempt": 1,
+    "packageId": "registry.npmjs.org/svelte/3.48.0",
+    "size": 1435893,
+    "status": "started"
+  }
+}

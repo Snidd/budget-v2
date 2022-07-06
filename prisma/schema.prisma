@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./budget.db"
+}
+
+model Expense {
+  id          String         @id @default(cuid())
+  description String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  categoryId  String
+  category    Category       @relation(fields: [categoryId], references: [id])
+  values      ExpenseValue[]
+}
+
+model ExpenseValue {
+  id        String  @id @default(cuid())
+  expenseId String
+  expense   Expense @relation(fields: [expenseId], references: [id])
+  month     Int
+  year      Int
+  value     Decimal
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  expenses Expense[]
+}
