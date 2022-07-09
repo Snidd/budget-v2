@@ -4,11 +4,11 @@ import * as trpc from '@trpc/client';
 import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
 import trpcTransformer from 'trpc-transformer';
 
-const url = browser ? '/trpc' : 'http://loooocalhost:3000/trpc';
+const url = browser ? '/trpc' : 'http://localhost:3000/trpc';
 
-export default (loadFetch?: typeof fetch) =>
+export default (loadFetch?: any) =>
 	trpc.createTRPCClient<Router>({
-		url: url,
+		url: loadFetch ? '/trpc' : url,
 		transformer: trpcTransformer,
 		...(loadFetch && { fetch: loadFetch })
 	});

@@ -1,3 +1,4 @@
+import { PaymentTypes } from '$lib/model/PaymentTypes';
 import prismaClient from '$lib/server/prismaClient';
 import { falsyToNull, trim } from '$lib/zodTransformer';
 import * as trpc from '@trpc/server';
@@ -25,6 +26,7 @@ export default trpc
 		input: z.object({
 			id: z.string().nullable(),
 			description: z.string().min(3).max(50).transform(trim),
+			paymentType: z.nativeEnum(PaymentTypes),
 			categoryId: z.string().min(1, 'Should be selected')
 			/*price: z.string().refine(
 				(val) => {
