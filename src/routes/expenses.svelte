@@ -15,17 +15,23 @@
 <script lang="ts">
 	import ModalDialog from '$components/ModalDialog.svelte';
 	import AddIcon from '$components/icons/AddIcon.svelte';
+	import TextInput from '$components/inputs/TextInput.svelte';
 
 	type Expense = InferMutationInput<'expenses:save'>;
 	type EditorErrors = {
 		description?: string;
 	} | void;
 
+	let editorErrors: EditorErrors = {
+		description: 'Required!'
+	};
+
 	const newExpense = (): Expense => ({
-		id: '',
-		categoryId: '',
+		id: null,
+		categoryId: -1,
 		paymentType: PaymentTypes.NORMAL,
 		description: '',
+		repeatingMonths: 0,
 		defaultValue: undefined,
 		duedate: undefined
 	});
@@ -33,9 +39,21 @@
 	export let expenses: InferQueryOutput<'expenses:list'> = [];
 
 	let expense = newExpense();
+
+	let expenseDialogVisible = true;
+
+	const handleEditorClose = () => {
+		expenseDialogVisible = false;
+	};
+
+	const handleEditorSave = () => {
+		expenseDialogVisible = false;
+	};
 </script>
 
-<button class="btn btn-primary gap-2"> <AddIcon /> Lägg till utgift</button>
+<button class="btn btn-primary gap-2" on:click={() => (expenseDialogVisible = true)}>
+	<AddIcon /> Lägg till utgift</button
+>
 
 <!-- promise was fulfilled -->
 {#each expenses as expense}
@@ -43,6 +61,17 @@
 {/each}
 <!-- promise was fulfilled -->
 
-<ModalDialog title="Lägg till utgift" visible={true}>
-	<input bind:value={expense.description} />
+<ModalDialog
+	title="Lägg till utgift"
+	visible={expenseDialogVisible}
+	on:close={handleEditorClose}
+	on:save={handleEditorSave}
+>
+	<TextInput
+		label="Beskrivning"
+		required={true}
+		placeholder="Beskriv utgiften"
+		bind:value={expense.description}
+		error={editorErrors?.description}
+	/>
 </ModalDialog>

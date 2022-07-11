@@ -23,7 +23,7 @@ export default trpc
 			})
 	})
 	.query('listByCategory', {
-		input: z.string(),
+		input: z.number(),
 		resolve: ({ input: categoryId }) =>
 			prismaClient.expense.findMany({
 				where: { categoryId },
@@ -40,10 +40,11 @@ export default trpc
 	})
 	.mutation('save', {
 		input: z.object({
-			id: z.string().nullable(),
+			id: z.number().nullable(),
 			description: z.string().min(3).max(50).transform(trim),
 			paymentType: z.nativeEnum(PaymentTypes),
-			categoryId: z.string().min(1, 'Should be selected'),
+			categoryId: z.number().min(1, 'Should be selected'),
+			repeatingMonths: z.number(),
 			duedate: z.date().optional(),
 			active: z.boolean().default(true),
 			defaultValue: z.number().optional()
@@ -65,6 +66,6 @@ export default trpc
 				: prismaClient.expense.create({ data, select: { id: true } })
 	})
 	.mutation('delete', {
-		input: z.string(),
+		input: z.number(),
 		resolve: ({ input: id }) => prismaClient.expense.delete({ where: { id } }).then(() => undefined)
 	});

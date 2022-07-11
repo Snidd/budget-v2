@@ -8,30 +8,50 @@ datasource db {
 }
 
 model Expense {
-  id           String         @id @default(cuid())
-  description  String
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  categoryId   String
-  paymentType  Int
-  category     Category       @relation(fields: [categoryId], references: [id])
-  duedate      DateTime?
-  active       Boolean        @default(true)
-  defaultValue Decimal?
-  values       ExpenseValue[]
+  id              Int            @id @default(autoincrement())
+  description     String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  categoryId      Int
+  paymentType     Int
+  category        Category       @relation(fields: [categoryId], references: [id])
+  duedate         DateTime?
+  active          Boolean        @default(true)
+  defaultValue    Decimal?
+  repeatingMonths Int            @default(0)
+  values          ExpenseValue[]
 }
 
 model ExpenseValue {
-  id        String  @id @default(cuid())
-  expenseId String
+  id        Int     @id @default(autoincrement())
+  expenseId Int
   expense   Expense @relation(fields: [expenseId], references: [id])
   month     Int
   year      Int
   value     Decimal
 }
 
+model Income {
+  id              Int           @id @default(autoincrement())
+  defaultValue    Decimal
+  description     String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  values          IncomeValue[]
+  repeatingMonths Int           @default(0)
+}
+
+model IncomeValue {
+  id       Int     @id @default(autoincrement())
+  incomeId Int
+  income   Income  @relation(fields: [incomeId], references: [id])
+  month    Int
+  year     Int
+  value    Decimal
+}
+
 model Category {
-  id       String    @id @default(cuid())
+  id       Int       @id @default(autoincrement())
   name     String
   expenses Expense[]
 }
