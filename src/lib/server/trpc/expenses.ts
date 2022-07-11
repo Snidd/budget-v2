@@ -10,7 +10,15 @@ export default trpc
 	.query('list', {
 		resolve: () =>
 			prismaClient.expense.findMany({
-				select: { id: true, description: true, category: { select: { name: true } }, values: true },
+				select: {
+					id: true,
+					description: true,
+					active: true,
+					duedate: true,
+					defaultValue: true,
+					category: { select: { name: true } },
+					values: true
+				},
 				orderBy: [{ description: 'asc' }]
 			})
 	})
@@ -19,7 +27,15 @@ export default trpc
 		resolve: ({ input: categoryId }) =>
 			prismaClient.expense.findMany({
 				where: { categoryId },
-				select: { id: true, description: true, category: { select: { name: true } }, values: true }
+				select: {
+					id: true,
+					description: true,
+					active: true,
+					duedate: true,
+					defaultValue: true,
+					category: { select: { name: true } },
+					values: true
+				}
 			})
 	})
 	.mutation('save', {
@@ -27,7 +43,10 @@ export default trpc
 			id: z.string().nullable(),
 			description: z.string().min(3).max(50).transform(trim),
 			paymentType: z.nativeEnum(PaymentTypes),
-			categoryId: z.string().min(1, 'Should be selected')
+			categoryId: z.string().min(1, 'Should be selected'),
+			duedate: z.date().optional(),
+			active: z.boolean().default(true),
+			defaultValue: z.number().optional()
 			/*price: z.string().refine(
 				(val) => {
 					try {

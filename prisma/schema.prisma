@@ -8,14 +8,17 @@ datasource db {
 }
 
 model Expense {
-  id          String         @id @default(cuid())
-  description String
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  categoryId  String
-  paymentType Int
-  category    Category       @relation(fields: [categoryId], references: [id])
-  values      ExpenseValue[]
+  id           String         @id @default(cuid())
+  description  String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  categoryId   String
+  paymentType  Int
+  category     Category       @relation(fields: [categoryId], references: [id])
+  duedate      DateTime?
+  active       Boolean        @default(true)
+  defaultValue Decimal?
+  values       ExpenseValue[]
 }
 
 model ExpenseValue {
