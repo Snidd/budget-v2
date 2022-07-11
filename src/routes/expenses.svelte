@@ -1,6 +1,8 @@
 <script context="module" lang="ts">
 	import getEditorErrors from '$lib/client/getEditorErrors';
 	import type { InferMutationInput, InferQueryOutput } from '$lib/client/trpc';
+	import type { Router } from '$lib/server/trpc';
+	import type { TRPCClientError } from '@trpc/client';
 	import trpc from '$lib/client/trpc';
 	import { PaymentTypes } from '$lib/model/PaymentTypes';
 	import type { Load } from '@sveltejs/kit';
@@ -23,7 +25,7 @@
 	} | void;
 
 	let editorErrors: EditorErrors = {
-		description: 'Required!'
+		description: ''
 	};
 
 	const newExpense = (): Expense => ({
@@ -39,15 +41,30 @@
 	export let expenses: InferQueryOutput<'expenses:list'> = [];
 
 	let expense = newExpense();
-
 	let expenseDialogVisible = true;
+	let loading = false;
+
+	const reloadExpenses = async () => {
+		loading = true;
+		expenses = await trpc().query('expenses:list');
+		loading = false;
+	};
 
 	const handleEditorClose = () => {
 		expenseDialogVisible = false;
+		expense = newExpense();
 	};
 
-	const handleEditorSave = () => {
-		expenseDialogVisible = false;
+	const handleEditorSave = async () => {
+		//save expense
+		try {
+			await trpc().mutation('expenses:save', expense);
+			expenseDialogVisible = false;
+			expense = newExpense();
+			reloadExpenses();
+		} catch (err) {
+			editorErrors = getEditorErrors(err as TRPCClientError<Router>);
+		}
 	};
 </script>
 
