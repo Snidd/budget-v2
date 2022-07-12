@@ -53,5 +53,6 @@ model IncomeValue {
 model Category {
   id       Int       @id @default(autoincrement())
   name     String
+  order    Int       @default(0)
   expenses Expense[]
 }

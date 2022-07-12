@@ -18,15 +18,13 @@
 	import ModalDialog from '$components/ModalDialog.svelte';
 	import AddIcon from '$components/icons/AddIcon.svelte';
 	import TextInput from '$components/inputs/TextInput.svelte';
+	import SelectInput from '$components/inputs/SelectInput.svelte';
+	import { paymentTypeSelect } from '$lib/model/PaymentTypes';
+	import CategorySelect from '$components/inputs/CategorySelect.svelte';
 
 	type Expense = InferMutationInput<'expenses:save'>;
-	type EditorErrors = {
-		description?: string;
-	} | void;
 
-	let editorErrors: EditorErrors = {
-		description: ''
-	};
+	let editorErrors: Record<string, string> | undefined;
 
 	const newExpense = (): Expense => ({
 		id: null,
@@ -91,4 +89,12 @@
 		bind:value={expense.description}
 		error={editorErrors?.description}
 	/>
+	<SelectInput
+		label="Betalningsmetod"
+		required={true}
+		values={paymentTypeSelect}
+		bind:value={expense.paymentType}
+		error={editorErrors?.paymentType}
+	/>
+	<CategorySelect label="Kategori" bind:value={expense.categoryId} />
 </ModalDialog>
