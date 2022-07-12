@@ -34,7 +34,7 @@
 	<div class="input-group w-full max-w-xs">
 		<select
 			{id}
-			class="select select-bordered w-6/12"
+			class="select select-bordered w-1/2"
 			{required}
 			aria-invalid={error ? 'true' : undefined}
 			bind:value
@@ -46,7 +46,7 @@
 				{/each}
 			{/if}
 		</select>
-		<button class="btn btn-secondary gap-2 w-6/12"><AddIcon />Ny kategori</button>
+		<button class="btn btn-secondary gap-2 w-1/2"><AddIcon />Ny kategori</button>
 	</div>
 	{#if error}
 		<small class="text-error">{error}</small>
