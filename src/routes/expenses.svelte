@@ -96,5 +96,9 @@
 		bind:value={expense.paymentType}
 		error={editorErrors?.paymentType}
 	/>
-	<CategorySelect label="Kategori" bind:value={expense.categoryId} />
+	<CategorySelect
+		label="Kategori"
+		bind:value={expense.categoryId}
+		error={editorErrors?.categoryId}
+	/>
 </ModalDialog>

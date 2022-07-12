@@ -1,4 +1,6 @@
 <script lang="ts">
+	import AddIcon from '$components/icons/AddIcon.svelte';
+
 	import trpc, { type InferQueryOutput } from '$lib/client/trpc';
 
 	import type { SelectElements } from '$lib/model/PaymentTypes';
@@ -8,8 +10,7 @@
 	export let label: string;
 	export let required = true;
 	export let value: number;
-
-	let error: string | void;
+	export let error: string | void;
 
 	export let categories: InferQueryOutput<'categories:list'> = [];
 
@@ -30,20 +31,23 @@
 	<label class="label" for={id}>
 		<span class="label-text">{label}<LabelAsterisk {required} /></span>
 	</label>
-	<select
-		{id}
-		class="select select-bordered"
-		{required}
-		aria-invalid={error ? 'true' : undefined}
-		bind:value
-	>
-		<option disabled selected value={-1}>Välj kategori...</option>
-		{#if !loading}
-			{#each categories as category}
-				<option value={category.id}>{category.name}</option>
-			{/each}
-		{/if}
-	</select>
+	<div class="input-group w-full max-w-xs">
+		<select
+			{id}
+			class="select select-bordered w-6/12"
+			{required}
+			aria-invalid={error ? 'true' : undefined}
+			bind:value
+		>
+			<option disabled selected value={-1}>Välj kategori...</option>
+			{#if !loading}
+				{#each categories as category}
+					<option value={category.id}>{category.name}</option>
+				{/each}
+			{/if}
+		</select>
+		<button class="btn btn-secondary gap-2 w-6/12"><AddIcon />Ny kategori</button>
+	</div>
 	{#if error}
 		<small class="text-error">{error}</small>
 	{/if}
