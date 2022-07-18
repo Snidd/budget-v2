@@ -14,7 +14,9 @@
 	<label class="label" for={id}>
 		<span class="label-text">{label}<LabelAsterisk {required} /></span>
 	</label>
+	<!-- svelte-ignore a11y-autofocus -->
 	<input
+		autofocus
 		{id}
 		class="input input-bordered w-full max-w-xs"
 		type="text"

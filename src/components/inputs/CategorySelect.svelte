@@ -6,6 +6,7 @@
 	import type { SelectElements } from '$lib/model/PaymentTypes';
 
 	import LabelAsterisk from './LabelAsterisk.svelte';
+	import TextInput from './TextInput.svelte';
 
 	export let label: string;
 	export let required = true;
@@ -22,33 +23,48 @@
 		loading = false;
 	};
 
+	let addCategory = false;
+	let newCategoryName = '';
+
 	reloadCategories();
 
 	const id = `categoryinput-${label}`.replaceAll(' ', '-');
 </script>
 
-<div class="form-control w-full max-w-xs">
-	<label class="label" for={id}>
-		<span class="label-text">{label}<LabelAsterisk {required} /></span>
-	</label>
-	<div class="input-group w-full max-w-xs">
-		<select
-			{id}
-			class="select select-bordered w-1/2"
-			{required}
-			aria-invalid={error ? 'true' : undefined}
-			bind:value
-		>
-			<option disabled selected value={-1}>Välj kategori...</option>
-			{#if !loading}
-				{#each categories as category}
-					<option value={category.id}>{category.name}</option>
-				{/each}
-			{/if}
-		</select>
-		<button class="btn btn-secondary gap-2 w-1/2"><AddIcon />Ny kategori</button>
+{#if !addCategory}
+	<div class="form-control w-full max-w-xs">
+		<label class="label" for={id}>
+			<span class="label-text">{label}<LabelAsterisk {required} /></span>
+		</label>
+		<div class="input-group w-full max-w-xs">
+			<select
+				{id}
+				class="select select-bordered w-60"
+				{required}
+				aria-invalid={error ? 'true' : undefined}
+				bind:value
+			>
+				<option disabled selected value={-1}>Välj kategori...</option>
+				{#if !loading}
+					{#each categories as category}
+						<option value={category.id}>{category.name}</option>
+					{/each}
+				{/if}
+			</select>
+			<button class="btn btn-secondary gap-2" on:click={() => (addCategory = true)}
+				><AddIcon /></button
+			>
+		</div>
+		{#if error}
+			<small class="text-error">{error}</small>
+		{/if}
 	</div>
-	{#if error}
-		<small class="text-error">{error}</small>
-	{/if}
-</div>
+{:else}
+	<TextInput
+		{label}
+		required={true}
+		placeholder={'Kategorinamn'}
+		bind:value={newCategoryName}
+		error={undefined}
+	/>
+{/if}

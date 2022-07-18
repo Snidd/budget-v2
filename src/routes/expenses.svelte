@@ -72,7 +72,7 @@
 
 <!-- promise was fulfilled -->
 {#each expenses as expense}
-	<p>{expense.description}</p>
+	<p>{expense.description} - {expense.category.name}</p>
 {/each}
 <!-- promise was fulfilled -->
 
