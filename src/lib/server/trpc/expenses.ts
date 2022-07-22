@@ -5,21 +5,38 @@ import * as trpc from '@trpc/server';
 import Decimal from 'decimal.js';
 import { z } from 'zod';
 
+const dateSchema = z.preprocess((arg) => {
+	if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
+}, z.date());
+
+type DateSchema = z.infer<typeof dateSchema>;
+
+const selectObject = {
+	id: true,
+	description: true,
+	repeatingMonths: true,
+	active: true,
+	duedate: true,
+	defaultValue: true,
+	category: { select: { name: true } },
+	values: true
+};
+
 export default trpc
 	.router()
 	.query('list', {
 		resolve: () =>
 			prismaClient.expense.findMany({
-				select: {
-					id: true,
-					description: true,
-					active: true,
-					duedate: true,
-					defaultValue: true,
-					category: { select: { name: true } },
-					values: true
-				},
+				select: selectObject,
 				orderBy: [{ description: 'asc' }]
+			})
+	})
+	.query('getById', {
+		input: z.number(),
+		resolve: ({ input: id }) =>
+			prismaClient.expense.findUnique({
+				where: { id },
+				select: selectObject
 			})
 	})
 	.query('listByCategory', {
@@ -27,15 +44,7 @@ export default trpc
 		resolve: ({ input: categoryId }) =>
 			prismaClient.expense.findMany({
 				where: { categoryId },
-				select: {
-					id: true,
-					description: true,
-					active: true,
-					duedate: true,
-					defaultValue: true,
-					category: { select: { name: true } },
-					values: true
-				}
+				select: selectObject
 			})
 	})
 	.mutation('save', {
@@ -45,7 +54,7 @@ export default trpc
 			paymentType: z.nativeEnum(PaymentTypes),
 			categoryId: z.number().min(1, 'Should be selected'),
 			repeatingMonths: z.number(),
-			duedate: z.date().optional(),
+			duedate: dateSchema.optional(),
 			active: z.boolean().default(true),
 			defaultValue: z.number().optional()
 			/*price: z.string().refine(

@@ -11,6 +11,7 @@
 	export let label: string;
 	export let required = true;
 	export let value: number;
+	export let newCategoryValue: string;
 	export let error: string | void;
 
 	export let categories: InferQueryOutput<'categories:list'> = [];
@@ -24,7 +25,6 @@
 	};
 
 	let addCategory = false;
-	let newCategoryName = '';
 
 	reloadCategories();
 
@@ -64,7 +64,7 @@
 		{label}
 		required={true}
 		placeholder={'Kategorinamn'}
-		bind:value={newCategoryName}
+		bind:value={newCategoryValue}
 		error={undefined}
 	/>
 {/if}

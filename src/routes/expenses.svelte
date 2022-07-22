@@ -21,24 +21,38 @@
 	import SelectInput from '$components/inputs/SelectInput.svelte';
 	import { paymentTypeSelect } from '$lib/model/PaymentTypes';
 	import CategorySelect from '$components/inputs/CategorySelect.svelte';
+	import NumberInput from '$components/inputs/NumberInput.svelte';
+	import DateInput from '$components/inputs/DateInput.svelte';
+	import ExpenseCard from '$components/ExpenseCard.svelte';
 
 	type Expense = InferMutationInput<'expenses:save'>;
+	type Category = InferMutationInput<'categories:save'>;
 
 	let editorErrors: Record<string, string> | undefined;
 
-	const newExpense = (): Expense => ({
+	const newExpense = (): Expense => {
+		editorErrors = undefined;
+		return {
+			id: null,
+			categoryId: -1,
+			paymentType: PaymentTypes.NORMAL,
+			description: '',
+			repeatingMonths: 0,
+			defaultValue: undefined,
+			duedate: undefined
+		};
+	};
+
+	const newCategory = (): Category => ({
 		id: null,
-		categoryId: -1,
-		paymentType: PaymentTypes.NORMAL,
-		description: '',
-		repeatingMonths: 0,
-		defaultValue: undefined,
-		duedate: undefined
+		name: '',
+		order: 0
 	});
 
 	export let expenses: InferQueryOutput<'expenses:list'> = [];
 
 	let expense = newExpense();
+	let category = newCategory();
 	let expenseDialogVisible = true;
 	let loading = false;
 
@@ -54,6 +68,11 @@
 	};
 
 	const handleEditorSave = async () => {
+		if (category.name && category.name.length > 0) {
+			const newCategory = await trpc().mutation('categories:save', category);
+			expense.categoryId = newCategory.id;
+		}
+
 		//save expense
 		try {
 			await trpc().mutation('expenses:save', expense);
@@ -70,11 +89,11 @@
 	<AddIcon /> Lägg till utgift</button
 >
 
-<!-- promise was fulfilled -->
-{#each expenses as expense}
-	<p>{expense.description} - {expense.category.name}</p>
-{/each}
-<!-- promise was fulfilled -->
+<div class="flex flex-wrap gap-2 mt-2">
+	{#each expenses as expense}
+		<ExpenseCard {expense} on:delete={() => reloadExpenses()} />
+	{/each}
+</div>
 
 <ModalDialog
 	title="Lägg till utgift"
@@ -99,6 +118,31 @@
 	<CategorySelect
 		label="Kategori"
 		bind:value={expense.categoryId}
+		bind:newCategoryValue={category.name}
 		error={editorErrors?.categoryId}
+	/>
+	<NumberInput
+		label="Standardkostnad"
+		bind:value={expense.defaultValue}
+		placeholder="0"
+		suffix="SEK"
+		required={false}
+		error={editorErrors?.defaultValue}
+	/>
+	<NumberInput
+		label="Återkommande var X månad?"
+		bind:value={expense.repeatingMonths}
+		prefix="Var"
+		suffix="månad"
+		placeholder="0"
+		required={false}
+		error={editorErrors?.repeatingMonths}
+	/>
+	<DateInput
+		label="Förfallodatum"
+		placeholder=""
+		required={false}
+		bind:value={expense.duedate}
+		error={editorErrors?.duedate}
 	/>
 </ModalDialog>

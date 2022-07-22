@@ -21,7 +21,6 @@ export default trpc
 		input: z.object({
 			id: z.number().nullable(),
 			name: z.string().min(3).max(150).transform(trim),
-			active: z.boolean().default(true),
 			order: z.number().default(0)
 			/*price: z.string().refine(
 				(val) => {
