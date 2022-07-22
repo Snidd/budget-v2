@@ -26,7 +26,7 @@ model ExpenseMonths {
   id       Int            @id @default(autoincrement())
   month    Int
   year     Int
-  comment  String
+  comment  String?
   values   ExpenseValue[]
   expenses Expense[]
 
@@ -35,7 +35,7 @@ model ExpenseMonths {
 
 model ExpenseValue {
   id                 Int            @id @default(autoincrement())
-  comment            String
+  comment            String?
   value              Decimal
   expenseMonths      ExpenseMonths? @relation(fields: [expenseMonthsMonth, expenseMonthsYear], references: [month, year])
   expenseMonthsMonth Int?
