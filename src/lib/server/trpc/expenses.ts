@@ -1,5 +1,6 @@
 import { PaymentTypes } from '$lib/model/PaymentTypes';
 import prismaClient from '$lib/server/prismaClient';
+import type { Prisma } from '@prisma/client';
 import { falsyToNull, trim } from '$lib/zodTransformer';
 import * as trpc from '@trpc/server';
 import Decimal from 'decimal.js';
@@ -9,7 +10,12 @@ const dateSchema = z.preprocess((arg) => {
 	if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
 }, z.date());
 
+const booleanSchema = z.preprocess((arg) => {
+	if (typeof arg == 'string' || arg instanceof Boolean) return new Boolean(arg);
+}, z.boolean());
+
 type DateSchema = z.infer<typeof dateSchema>;
+type BooleanSchema = z.infer<typeof booleanSchema>;
 
 const selectObject = {
 	id: true,
@@ -18,8 +24,8 @@ const selectObject = {
 	active: true,
 	duedate: true,
 	defaultValue: true,
-	category: { select: { name: true } },
-	values: true
+	isIncome: true,
+	category: { select: { name: true } }
 };
 
 export default trpc
@@ -27,6 +33,15 @@ export default trpc
 	.query('list', {
 		resolve: () =>
 			prismaClient.expense.findMany({
+				select: selectObject,
+				orderBy: [{ description: 'asc' }]
+			})
+	})
+	.query('listByIncome', {
+		input: z.boolean(),
+		resolve: ({ input: isIncome }) =>
+			prismaClient.expense.findMany({
+				where: { isIncome },
 				select: selectObject,
 				orderBy: [{ description: 'asc' }]
 			})
@@ -56,18 +71,8 @@ export default trpc
 			repeatingMonths: z.number(),
 			duedate: dateSchema.optional(),
 			active: z.boolean().default(true),
-			defaultValue: z.number().optional()
-			/*price: z.string().refine(
-				(val) => {
-					try {
-						new Decimal(val);
-						return true;
-					} catch {
-						return false;
-					}
-				},
-				{ message: 'Valid number required' }
-			),*/
+			defaultValue: z.number().optional(),
+			isIncome: z.boolean().default(false)
 		}),
 		resolve: ({ input: { id, ...data } }) =>
 			id

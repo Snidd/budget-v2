@@ -1,6 +1,6 @@
 {
 	"name": "budget-app-v2",
-	"version": "0.0.1",
+	"version": "0.9.1",
 	"scripts": {
 		"db-push": "prisma db push",
 		"db-studio": "prisma studio",

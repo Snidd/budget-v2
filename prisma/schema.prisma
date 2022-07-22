@@ -18,19 +18,18 @@ model Expense {
   duedate         DateTime?
   active          Boolean   @default(true)
   defaultValue    Decimal?
+  isIncome        Boolean   @default(false)
   repeatingMonths Int       @default(0)
   months          Month[]
 }
 
 model Month {
-  id           Int            @id @default(autoincrement())
-  month        Int
-  year         Int
-  comment      String         @default("")
-  values       ExpenseValue[]
-  incomeValues IncomeValue[]
-  expenses     Expense[]
-  incomes      Income[]
+  id       Int            @id @default(autoincrement())
+  month    Int
+  year     Int
+  comment  String         @default("")
+  values   ExpenseValue[]
+  expenses Expense[]
 
   @@unique([month, year])
   @@map("ExpenseMonth")
@@ -44,30 +43,9 @@ model ExpenseValue {
   monthId Int?
 }
 
-model Income {
-  id              Int       @id @default(autoincrement())
-  defaultValue    Decimal
-  description     String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  repeatingMonths Int       @default(0)
-  months          Month[]
-  category        Category? @relation(fields: [categoryId], references: [id])
-  categoryId      Int?
-}
-
-model IncomeValue {
-  id      Int     @id @default(autoincrement())
-  value   Decimal
-  comment String  @default("")
-  month   Month?  @relation(fields: [monthId], references: [id])
-  monthId Int?
-}
-
 model Category {
   id       Int       @id @default(autoincrement())
   name     String
   order    Int       @default(0)
   expenses Expense[]
-  incomes  Income[]
 }

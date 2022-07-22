@@ -24,6 +24,7 @@
 	import NumberInput from '$components/inputs/NumberInput.svelte';
 	import DateInput from '$components/inputs/DateInput.svelte';
 	import ExpenseCard from '$components/ExpenseCard.svelte';
+	import CheckboxInput from '$components/inputs/CheckboxInput.svelte';
 
 	type Expense = InferMutationInput<'expenses:save'>;
 	type Category = InferMutationInput<'categories:save'>;
@@ -39,7 +40,8 @@
 			description: '',
 			repeatingMonths: 0,
 			defaultValue: undefined,
-			duedate: undefined
+			duedate: undefined,
+			isIncome: false
 		};
 	};
 
@@ -53,7 +55,7 @@
 
 	let expense = newExpense();
 	let category = newCategory();
-	let expenseDialogVisible = true;
+	let expenseDialogVisible = false;
 	let loading = false;
 
 	const reloadExpenses = async () => {
@@ -144,5 +146,11 @@
 		required={false}
 		bind:value={expense.duedate}
 		error={editorErrors?.duedate}
+	/>
+	<CheckboxInput
+		label="Är det en inkomst istället?"
+		required={false}
+		bind:checked={expense.isIncome}
+		error={editorErrors?.isIncome}
 	/>
 </ModalDialog>

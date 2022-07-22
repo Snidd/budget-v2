@@ -35,6 +35,7 @@
 		<p>{expense.defaultValue}</p>
 		<p>{expense.repeatingMonths}</p>
 		<p>{expense.duedate}</p>
+		<p>{expense.isIncome}</p>
 		<button
 			class="btn btn-secondary gap-2 {deleting ? 'btn-disabled' : ''}"
 			on:click={() => deleteExpense()}
