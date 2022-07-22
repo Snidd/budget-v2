@@ -91,6 +91,8 @@
 	<AddIcon /> Lägg till utgift</button
 >
 
+<!-- Table example: https://github.com/TanStack/table/blob/main/examples/svelte/basic/src/App.svelte -->
+
 <div class="flex flex-wrap gap-2 mt-2">
 	{#each expenses as expense}
 		<ExpenseCard {expense} on:delete={() => reloadExpenses()} />

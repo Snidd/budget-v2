@@ -39,6 +39,7 @@
 	"type": "module",
 	"dependencies": {
 		"@prisma/client": "^4.1.0",
+		"@tanstack/svelte-table": "^8.3.1",
 		"@trpc/client": "^9.26.2",
 		"@trpc/server": "^9.26.2",
 		"daisyui": "^2.19.1",
