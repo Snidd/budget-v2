@@ -4,6 +4,10 @@
 	import { createEventDispatcher } from 'svelte';
 	import DeleteIcon from './icons/DeleteIcon.svelte';
 	import SpinnerIcon from './icons/SpinnerIcon.svelte';
+	import { sv } from 'date-fns/locale';
+	import { format, formatDistance } from 'date-fns';
+	import { getPaymentTypeString } from '$lib/model/PaymentTypes';
+	import PaymentTypeBadge from './badges/PaymentTypeBadge.svelte';
 
 	const dispatch = createEventDispatcher<{ delete: never }>();
 
@@ -25,27 +29,53 @@
 			}
 		}
 	};
+
+	const getRepeatingMonthText = (repeatingMonths: number): string => {
+		if (repeatingMonths === null || repeatingMonths === 0) {
+			return '';
+		}
+		if (repeatingMonths === 1) {
+			return 'varje månad';
+		}
+		if (repeatingMonths === 2) {
+			return 'varannan månad';
+		}
+
+		return `var ${repeatingMonths}:e månad`;
+	};
 </script>
 
 {#if expense != null}
-	<div class="bg-base-200 border border-primary rounded-md p-2">
-		<p>{expense.id}.</p>
-		<p>{expense.description}</p>
-		<p>{expense.category.name}</p>
-		<p>{expense.defaultValue}</p>
-		<p>{expense.repeatingMonths}</p>
-		<p>{expense.duedate}</p>
-		<p>{expense.isIncome}</p>
-		<button
-			class="btn btn-secondary gap-2 {deleting ? 'btn-disabled' : ''}"
-			on:click={() => deleteExpense()}
-		>
-			{#if deleting}
-				<SpinnerIcon />
-			{:else}
-				<DeleteIcon />
-			{/if}
-			Delete
-		</button>
+	<div class="card w-96 bg-base-100 shadow-xl">
+		<div class="card-body">
+			<div class="card-actions justify-between">
+				<div class="badge badge-outline -ml-2">{expense.category.name}</div>
+				<button
+					class="btn btn-xs btn-error gap-2 {deleting ? 'btn-disabled' : ''}"
+					on:click={() => deleteExpense()}
+				>
+					{#if deleting}
+						<SpinnerIcon />
+					{:else}
+						<DeleteIcon />
+					{/if}
+				</button>
+			</div>
+			<h2 class="card-title">{expense.description}</h2>
+			<p>
+				{expense.defaultValue != null
+					? Intl.NumberFormat('sv-SE', { style: 'currency', currency: 'SEK' }).format(
+							Number(expense.defaultValue)
+					  )
+					: ''}
+				{getRepeatingMonthText(expense.repeatingMonths)}
+			</p>
+			<div class="card-actions justify-end">
+				{#if expense.duedate != null}<p>
+						om {formatDistance(expense.duedate, new Date(), { locale: sv })}
+					</p>{/if}
+				<PaymentTypeBadge paymentType={expense.paymentType} />
+			</div>
+		</div>
 	</div>
 {/if}

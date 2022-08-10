@@ -25,6 +25,7 @@ const selectObject = {
 	duedate: true,
 	defaultValue: true,
 	isIncome: true,
+	paymentType: true,
 	category: { select: { name: true } }
 };
 

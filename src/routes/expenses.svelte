@@ -71,8 +71,14 @@
 
 	const handleEditorSave = async () => {
 		if (category.name && category.name.length > 0) {
-			const newCategory = await trpc().mutation('categories:save', category);
-			expense.categoryId = newCategory.id;
+			try {
+				const newCategoryResult = await trpc().mutation('categories:save', category);
+				expense.categoryId = newCategoryResult.id;
+				category = newCategory();
+			} catch (err) {
+				editorErrors = getEditorErrors(err as TRPCClientError<Router>);
+				return;
+			}
 		}
 
 		//save expense
@@ -123,6 +129,7 @@
 		label="Kategori"
 		bind:value={expense.categoryId}
 		bind:newCategoryValue={category.name}
+		createCategory={false}
 		error={editorErrors?.categoryId}
 	/>
 	<NumberInput

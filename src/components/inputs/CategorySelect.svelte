@@ -13,7 +13,7 @@
 	export let value: number;
 	export let newCategoryValue: string;
 	export let error: string | void;
-
+	export let createCategory: boolean;
 	export let categories: InferQueryOutput<'categories:list'> = [];
 
 	let loading = true;
@@ -24,7 +24,7 @@
 		loading = false;
 	};
 
-	let addCategory = false;
+	let addCategory = createCategory;
 
 	reloadCategories();
 

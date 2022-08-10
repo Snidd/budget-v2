@@ -12,7 +12,7 @@
 	const id = `numberinput-${label}`.replaceAll(' ', '-');
 </script>
 
-<div class="form-control w-full max-w-xs">
+<div class="form-control w-full">
 	<label class="label" for={id}>
 		<span class="label-text">{label}<LabelAsterisk {required} /></span>
 	</label>
@@ -23,7 +23,7 @@
 		<!-- svelte-ignore a11y-autofocus -->
 		<input
 			{id}
-			class="input input-bordered"
+			class="input input-bordered w-36"
 			type="number"
 			{placeholder}
 			{required}
