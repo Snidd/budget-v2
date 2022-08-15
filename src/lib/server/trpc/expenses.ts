@@ -4,7 +4,8 @@ import type { Prisma } from '@prisma/client';
 import { falsyToNull, trim } from '$lib/zodTransformer';
 import * as trpc from '@trpc/server';
 import Decimal from 'decimal.js';
-import { z } from 'zod';
+import { string, z } from 'zod';
+import categories from './categories';
 
 const dateSchema = z.preprocess((arg) => {
 	if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
@@ -16,6 +17,8 @@ const booleanSchema = z.preprocess((arg) => {
 
 type DateSchema = z.infer<typeof dateSchema>;
 type BooleanSchema = z.infer<typeof booleanSchema>;
+
+type ExpenseSelect = Prisma.ExpenseSelect;
 
 const selectObject = {
 	id: true,
@@ -32,11 +35,35 @@ const selectObject = {
 export default trpc
 	.router()
 	.query('list', {
-		resolve: () =>
-			prismaClient.expense.findMany({
+		input: z.enum([
+			'description',
+			'active',
+			'duedate',
+			'defaultValue',
+			'isIncome',
+			'paymentType',
+			'category'
+		]),
+		resolve: ({ input: orderParameter }) => {
+			const orderByDescription = { description: 'asc' };
+			const orderArray: object[] = [orderByDescription];
+			let orderObject: Record<string, string> | Record<string, Record<string, string>> | undefined =
+				undefined;
+			if (orderParameter !== undefined) {
+				orderObject = {};
+				orderObject[orderParameter] = 'asc';
+				if (orderParameter === 'category') {
+					orderObject[orderParameter] = {
+						name: 'asc'
+					};
+				}
+				orderArray.unshift(orderObject);
+			}
+			return prismaClient.expense.findMany({
 				select: selectObject,
-				orderBy: [{ description: 'asc' }]
-			})
+				orderBy: orderArray
+			});
+		}
 	})
 	.query('listByIncome', {
 		input: z.boolean(),

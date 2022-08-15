@@ -1,16 +1,22 @@
 <script context="module" lang="ts">
 	import getEditorErrors from '$lib/client/getEditorErrors';
-	import type { InferMutationInput, InferQueryOutput } from '$lib/client/trpc';
+	import type { InferMutationInput, InferQueryInput, InferQueryOutput } from '$lib/client/trpc';
 	import type { Router } from '$lib/server/trpc';
 	import type { TRPCClientError } from '@trpc/client';
 	import trpc from '$lib/client/trpc';
 	import { PaymentTypes } from '$lib/model/PaymentTypes';
 	import type { Load } from '@sveltejs/kit';
 	import { formatDistanceToNow } from 'date-fns';
+	import { string, z } from 'zod';
 
-	export const load: Load = async ({ fetch }) => {
-		const expenses = await trpc(fetch).query('expenses:list');
-		return { props: { expenses: expenses } };
+	export const load: Load = async ({ fetch, url }) => {
+		let orderBy: InferQueryInput<'expenses:list'> = 'category';
+		const orderByInput = url.searchParams.get('orderBy');
+		if (orderByInput !== null) {
+			orderBy = orderByInput as InferQueryInput<'expenses:list'>;
+		}
+		const expenses = await trpc(fetch).query('expenses:list', orderBy);
+		return { props: { expenses: expenses, orderBy: orderBy } };
 	};
 </script>
 
@@ -25,6 +31,9 @@
 	import DateInput from '$components/inputs/DateInput.svelte';
 	import ExpenseCard from '$components/ExpenseCard.svelte';
 	import CheckboxInput from '$components/inputs/CheckboxInput.svelte';
+	import { goto } from '$app/navigation';
+	import { browser } from '$app/env';
+	import ExpenseGroup from '$components/ExpenseGroup.svelte';
 
 	type Expense = InferMutationInput<'expenses:save'>;
 	type Category = InferMutationInput<'categories:save'>;
@@ -52,6 +61,7 @@
 	});
 
 	export let expenses: InferQueryOutput<'expenses:list'> = [];
+	export let orderBy: InferQueryInput<'expenses:list'>;
 
 	let expense = newExpense();
 	let category = newCategory();
@@ -60,7 +70,7 @@
 
 	const reloadExpenses = async () => {
 		loading = true;
-		expenses = await trpc().query('expenses:list');
+		expenses = await trpc().query('expenses:list', orderBy);
 		loading = false;
 	};
 
@@ -91,19 +101,50 @@
 			editorErrors = getEditorErrors(err as TRPCClientError<Router>);
 		}
 	};
+
+	const orderByValues = [
+		{
+			name: 'Kategori',
+			value: 'category'
+		},
+		{
+			name: 'Betalningstyp',
+			value: 'paymentType'
+		}
+	];
+
+	let selectedOrder = orderBy;
+
+	const changeOrderUrl = (orderKey: string) => {
+		if (browser) {
+			goto(`?orderBy=${orderKey}`);
+		}
+	};
+
+	$: changeOrderUrl(selectedOrder);
 </script>
 
-<button class="btn btn-primary gap-2" on:click={() => (expenseDialogVisible = true)}>
-	<AddIcon /> Lägg till utgift</button
->
+<div class="w-full pr-10 flex items-end gap-4 justify-between">
+	<div class="form-control w-full max-w-xs">
+		<label class="label" for="orderBySelector">
+			<span class="label-text">Sortera efter</span>
+		</label>
+		<select id="orderBySelector" class="select select-bordered" bind:value={selectedOrder}>
+			{#each orderByValues as value, index}
+				<option value={value.value}>{value.name}</option>
+			{/each}
+		</select>
+	</div>
+	<button class="btn btn-primary gap-2" on:click={() => (expenseDialogVisible = true)}>
+		<AddIcon /> Lägg till utgift</button
+	>
+</div>
 
 <!-- Table example: https://github.com/TanStack/table/blob/main/examples/svelte/basic/src/App.svelte -->
 
-<div class="flex flex-wrap gap-2 mt-2">
-	{#each expenses as expense}
-		<ExpenseCard {expense} on:delete={() => reloadExpenses()} />
-	{/each}
-</div>
+<ExpenseGroup groupBy={selectedOrder} {expenses} let:expense>
+	<ExpenseCard {expense} on:delete={() => reloadExpenses()} />
+</ExpenseGroup>
 
 <ModalDialog
 	title="Lägg till utgift"
