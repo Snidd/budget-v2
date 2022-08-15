@@ -13,6 +13,7 @@
 	export let value: number;
 	export let newCategoryValue: string;
 	export let error: string | void;
+	export let isIncome: boolean = false;
 	export let createCategory: boolean;
 	export let categories: InferQueryOutput<'categories:list'> = [];
 
@@ -20,7 +21,7 @@
 
 	const reloadCategories = async () => {
 		loading = true;
-		categories = await trpc().query('categories:list');
+		categories = await trpc().query('categories:list', isIncome);
 		loading = false;
 	};
 

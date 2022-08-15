@@ -5,6 +5,7 @@
 		</li>
 		<li><a href="/">Dashboard</a></li>
 		<li><a href="/expenses">Utgifter</a></li>
+		<li><a href="/incomes">Inkomster</a></li>
 		<li class="menu-title">
 			<span>Category</span>
 		</li>

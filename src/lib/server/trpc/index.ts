@@ -3,6 +3,7 @@ import * as trpc from '@trpc/server';
 import trpcTransformer from 'trpc-transformer';
 import categories from './categories';
 import expenses from './expenses';
+import incomes from './incomes';
 
 export const createContext = async () => ({});
 
@@ -10,6 +11,7 @@ export const router = trpc
 	.router<inferAsyncReturnType<typeof createContext>>()
 	.transformer(trpcTransformer)
 	.merge('expenses:', expenses)
+	.merge('incomes:', incomes)
 	.merge('categories:', categories);
 
 export type Router = typeof router;

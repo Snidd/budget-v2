@@ -8,12 +8,14 @@ import { z } from 'zod';
 export default trpc
 	.router()
 	.query('list', {
-		resolve: () =>
+		input: z.boolean().default(false).optional(),
+		resolve: ({ input }) =>
 			prismaClient.category.findMany({
 				select: {
 					id: true,
 					name: true
 				},
+				where: { isIncome: input !== undefined ? input : false },
 				orderBy: [{ order: 'asc' }, { name: 'asc' }]
 			})
 	})
@@ -21,6 +23,7 @@ export default trpc
 		input: z.object({
 			id: z.number().nullable(),
 			name: z.string().min(3).max(150).transform(trim),
+			isIncome: z.boolean().default(false),
 			order: z.number().default(0)
 			/*price: z.string().refine(
 				(val) => {

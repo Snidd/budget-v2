@@ -51,7 +51,7 @@
 			<div class="card-actions justify-between">
 				<div class="badge badge-outline -ml-2">{expense.category.name}</div>
 				<button
-					class="btn btn-xs btn-error gap-2 {deleting ? 'btn-disabled' : ''}"
+					class="btn btn-xs hover:opacity-80 btn-error gap-2 {deleting ? 'btn-disabled' : ''}"
 					on:click={() => deleteExpense()}
 				>
 					{#if deleting}

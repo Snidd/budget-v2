@@ -9,13 +9,15 @@
 	import { formatDistanceToNow } from 'date-fns';
 	import { string, z } from 'zod';
 
+	type ExpenseInput = InferQueryInput<'incomes:list'>;
+
 	export const load: Load = async ({ fetch, url }) => {
-		let orderBy: InferQueryInput<'expenses:list'> = 'category';
+		let orderBy: ExpenseInput = 'category';
 		const orderByInput = url.searchParams.get('orderBy');
 		if (orderByInput !== null) {
-			orderBy = orderByInput as InferQueryInput<'expenses:list'>;
+			orderBy = orderByInput as ExpenseInput;
 		}
-		const expenses = await trpc(fetch).query('expenses:list', orderBy);
+		const expenses = await trpc(fetch).query('incomes:list', orderBy);
 		return { props: { expenses: expenses, orderBy: orderBy } };
 	};
 </script>
@@ -35,9 +37,8 @@
 	import { browser } from '$app/env';
 	import ExpenseGroup from '$components/ExpenseGroup.svelte';
 
-	type Expense = InferMutationInput<'expenses:save'>;
+	type Expense = InferMutationInput<'incomes:save'>;
 	type Category = InferMutationInput<'categories:save'>;
-	type ExpenseInput = InferQueryInput<'expenses:list'>;
 
 	let editorErrors: Record<string, string> | undefined;
 
@@ -51,7 +52,7 @@
 			repeatingMonths: 0,
 			defaultValue: undefined,
 			duedate: undefined,
-			isIncome: false
+			isIncome: true
 		};
 	};
 
@@ -59,10 +60,10 @@
 		id: null,
 		name: '',
 		order: 0,
-		isIncome: false
+		isIncome: true
 	});
 
-	export let expenses: InferQueryOutput<'expenses:list'> = [];
+	export let expenses: InferQueryOutput<'incomes:list'> = [];
 	export let orderBy: ExpenseInput;
 
 	let expense = newExpense();
@@ -72,7 +73,7 @@
 
 	const reloadExpenses = async () => {
 		loading = true;
-		expenses = await trpc().query('expenses:list', orderBy);
+		expenses = await trpc().query('incomes:list', orderBy);
 		loading = false;
 	};
 
@@ -95,7 +96,7 @@
 
 		//save expense
 		try {
-			await trpc().mutation('expenses:save', expense);
+			await trpc().mutation('incomes:save', expense);
 			expenseDialogVisible = false;
 			expense = newExpense();
 			reloadExpenses();
@@ -138,7 +139,7 @@
 		</select>
 	</div>
 	<button class="btn btn-primary gap-2" on:click={() => (expenseDialogVisible = true)}>
-		<AddIcon /> Lägg till utgift</button
+		<AddIcon /> Lägg till inkomst</button
 	>
 </div>
 
@@ -149,7 +150,7 @@
 </ExpenseGroup>
 
 <ModalDialog
-	title="Lägg till utgift"
+	title="Lägg till inkomst"
 	visible={expenseDialogVisible}
 	on:close={handleEditorClose}
 	on:save={handleEditorSave}
@@ -173,6 +174,7 @@
 		bind:value={expense.categoryId}
 		bind:newCategoryValue={category.name}
 		createCategory={false}
+		isIncome={true}
 		error={editorErrors?.categoryId}
 	/>
 	<NumberInput
