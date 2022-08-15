@@ -68,7 +68,7 @@
 <div class="flex flex-col w-full border-opacity-50">
 	{#each getGroups(expenses, groupBy) as group}
 		<div class="divider">{getGroupName(group.name)}</div>
-		<div class="flex flex-wrap gap-2">
+		<div class="flex flex-wrap gap-2 mb-10">
 			{#each group.expenses as expense}
 				<slot {expense} />
 			{/each}
