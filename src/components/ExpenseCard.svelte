@@ -8,6 +8,7 @@
 	import { format, formatDistance } from 'date-fns';
 	import { getPaymentTypeString } from '$lib/model/PaymentTypes';
 	import PaymentTypeBadge from './badges/PaymentTypeBadge.svelte';
+	import { formatSEK } from '$lib/utils';
 
 	const dispatch = createEventDispatcher<{ delete: never }>();
 
@@ -63,11 +64,7 @@
 			</div>
 			<h2 class="card-title">{expense.description}</h2>
 			<p>
-				{expense.defaultValue != null
-					? Intl.NumberFormat('sv-SE', { style: 'currency', currency: 'SEK' }).format(
-							Number(expense.defaultValue)
-					  )
-					: ''}
+				{formatSEK(Number(expense.defaultValue))}
 				{getRepeatingMonthText(expense.repeatingMonths)}
 			</p>
 			<div class="card-actions justify-end">

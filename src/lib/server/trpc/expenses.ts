@@ -66,6 +66,13 @@ export default trpc
 			});
 		}
 	})
+	.query('listAll', {
+		resolve: () =>
+			prismaClient.expense.findMany({
+				select: selectObject,
+				orderBy: [{ isIncome: 'asc' }, { category: { name: 'asc' } }]
+			})
+	})
 	.query('getById', {
 		input: z.number(),
 		resolve: ({ input: id }) =>
