@@ -10,6 +10,8 @@
 	export let data: PageData;
 	export let errors: Errors;
 
+	console.log(`data expenses is array: ${Array.isArray(data.expenses)}`);
+
 	let selectedMonth = -1;
 	let selectedYear = -1;
 
@@ -32,12 +34,17 @@
 
 	type Expenses = InferQueryOutput<'incomes:list'>;
 
-	let expenses: Expenses = data;
+	let expenses: Expenses = data.expenses;
 
 	const reloadExpenseData = async () => {
 		const expensesResult = await trpc().query('expenses:list', 'category');
 		expenses = expensesResult;
 	};
+
+	$: selectableExpenses = expenses.map((expense) => {
+		let newExpense = { ...expense, selected: true };
+		return newExpense;
+	});
 
 	//$: shouldLoadTable === true ? loadExpenseData() : false;
 </script>
@@ -82,10 +89,13 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each expenses as expense}
-				<tr>
+			{#each selectableExpenses as expense}
+				<tr
+					class="hover cursor-pointer {expense.selected ? 'opacity-100' : 'opacity-50'}"
+					on:click={() => (expense.selected = !expense.selected)}
+				>
 					<th />
-					<td>{expense.description}</td>
+					<td>{expense.description} {expense.selected}</td>
 					<td><div class="badge badge-outline">{expense.category.name}</div></td>
 					<td>
 						{#if expense.defaultValue !== null}
@@ -94,7 +104,7 @@
 						{/if}
 					</td>
 					<td />
-					<td><input type="checkbox" checked={true} class="checkbox" /></td>
+					<td><input type="checkbox" bind:checked={expense.selected} class="checkbox" /></td>
 				</tr>
 			{/each}
 		</tbody>
