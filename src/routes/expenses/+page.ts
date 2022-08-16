@@ -6,12 +6,15 @@ import { error } from '@sveltejs/kit';
 type ExpenseInput = InferQueryInput<'incomes:list'>;
 
 export const load: PageLoad = async ({ fetch, url }) => {
-	let orderBy: ExpenseInput = 'category';
-	const orderByInput = url.searchParams.get('orderBy');
-	if (orderByInput !== null && orderByInput !== undefined && orderByInput !== 'undefined') {
-		orderBy = orderByInput as ExpenseInput;
+	try {
+		let orderBy: ExpenseInput = 'category';
+		const orderByInput = url.searchParams.get('orderBy');
+		if (orderByInput !== null && orderByInput !== undefined && orderByInput !== 'undefined') {
+			orderBy = orderByInput as ExpenseInput;
+		}
+		const expenses = await trpc(fetch).query('expenses:list', orderBy);
+		return { expenses: expenses, orderBy: orderBy };
+	} catch (err) {
+		throw error(500, String(err));
 	}
-	const expenses = await trpc(fetch).query('expenses:list', orderBy);
-	throw error(500, 'test');
-	return { expenses: expenses, orderBy: orderBy };
 };

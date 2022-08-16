@@ -9,6 +9,7 @@
 	import NumberInput from '$components/inputs/NumberInput.svelte';
 	import SelectInput from '$components/inputs/SelectInput.svelte';
 	import TextInput from '$components/inputs/TextInput.svelte';
+	import LoadingWithErrors from '$components/LoadingWithErrors.svelte';
 	import ModalDialog from '$components/ModalDialog.svelte';
 	import getEditorErrors from '$lib/client/getEditorErrors';
 	import type { InferMutationInput, InferQueryInput, InferQueryOutput } from '$lib/client/trpc';
@@ -23,7 +24,7 @@
 	type ExpenseInput = InferQueryInput<'incomes:list'>;
 
 	export let data: PageData;
-	//export let errors: Errors;
+	export let errors: Errors;
 
 	let editorErrors: Record<string, string> | undefined;
 
@@ -112,26 +113,27 @@
 	$: changeOrderUrl(selectedOrder);
 </script>
 
-<div class="w-full pr-10 flex items-end gap-4 justify-between">
-	<div class="form-control w-full max-w-xs">
-		<label class="label" for="orderBySelector">
-			<span class="label-text">Sortera efter</span>
-		</label>
-		<select id="orderBySelector" class="select select-bordered" bind:value={selectedOrder}>
-			{#each orderByValues as value, index}
-				<option value={value.value}>{value.name}</option>
-			{/each}
-		</select>
+<LoadingWithErrors {loading} {errors}>
+	<div class="w-full pr-10 flex items-end gap-4 justify-between">
+		<div class="form-control w-full max-w-xs">
+			<label class="label" for="orderBySelector">
+				<span class="label-text">Sortera efter</span>
+			</label>
+			<select id="orderBySelector" class="select select-bordered" bind:value={selectedOrder}>
+				{#each orderByValues as value, index}
+					<option value={value.value}>{value.name}</option>
+				{/each}
+			</select>
+		</div>
+		<button class="btn btn-primary gap-2" on:click={() => (expenseDialogVisible = true)}>
+			<AddIcon /> Lägg till inkomst</button
+		>
 	</div>
-	<button class="btn btn-primary gap-2" on:click={() => (expenseDialogVisible = true)}>
-		<AddIcon /> Lägg till inkomst</button
-	>
-</div>
 
-<ExpenseGroup groupBy={selectedOrder} {expenses} let:expense>
-	<ExpenseCard {expense} on:delete={() => reloadExpenses()} />
-</ExpenseGroup>
-
+	<ExpenseGroup groupBy={selectedOrder} {expenses} let:expense>
+		<ExpenseCard {expense} on:delete={() => reloadExpenses()} />
+	</ExpenseGroup>
+</LoadingWithErrors>
 <ModalDialog
 	title="Lägg till inkomst"
 	visible={expenseDialogVisible}
