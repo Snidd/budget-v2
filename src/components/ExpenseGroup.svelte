@@ -65,13 +65,15 @@
   <div class="grid h-20 card bg-base-300 rounded-box place-items-center">content</div>
 </div>-->
 
-<div class="flex flex-col w-full border-opacity-50">
-	{#each getGroups(expenses, groupBy) as group}
-		<div class="divider">{getGroupName(group.name)}</div>
-		<div class="flex flex-wrap gap-2 mb-10">
-			{#each group.expenses as expense}
-				<slot {expense} />
-			{/each}
-		</div>
-	{/each}
-</div>
+{#if groupBy}
+	<div class="flex flex-col w-full border-opacity-50">
+		{#each getGroups(expenses, groupBy) as group}
+			<div class="divider">{getGroupName(group.name)}</div>
+			<div class="flex flex-wrap gap-2 mb-10">
+				{#each group.expenses as expense}
+					<slot {expense} />
+				{/each}
+			</div>
+		{/each}
+	</div>
+{/if}

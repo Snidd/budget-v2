@@ -1,44 +1,29 @@
-<script context="module" lang="ts">
+<script lang="ts">
+	import { browser } from '$app/env';
+	import { goto } from '$app/navigation';
+	import ExpenseCard from '$components/ExpenseCard.svelte';
+	import ExpenseGroup from '$components/ExpenseGroup.svelte';
+	import AddIcon from '$components/icons/AddIcon.svelte';
+	import CategorySelect from '$components/inputs/CategorySelect.svelte';
+	import DateInput from '$components/inputs/DateInput.svelte';
+	import NumberInput from '$components/inputs/NumberInput.svelte';
+	import SelectInput from '$components/inputs/SelectInput.svelte';
+	import TextInput from '$components/inputs/TextInput.svelte';
+	import ModalDialog from '$components/ModalDialog.svelte';
 	import getEditorErrors from '$lib/client/getEditorErrors';
 	import type { InferMutationInput, InferQueryInput, InferQueryOutput } from '$lib/client/trpc';
+	import trpc from '$lib/client/trpc';
+	import { PaymentTypes, paymentTypeSelect } from '$lib/model/PaymentTypes';
 	import type { Router } from '$lib/server/trpc';
 	import type { TRPCClientError } from '@trpc/client';
-	import trpc from '$lib/client/trpc';
-	import { PaymentTypes } from '$lib/model/PaymentTypes';
-	import type { Load } from '@sveltejs/kit';
-	import { formatDistanceToNow } from 'date-fns';
-	import { string, z } from 'zod';
-
-	type ExpenseInput = InferQueryInput<'incomes:list'>;
-
-	export const load: Load = async ({ fetch, url }) => {
-		let orderBy: ExpenseInput = 'category';
-		const orderByInput = url.searchParams.get('orderBy');
-		if (orderByInput !== null) {
-			orderBy = orderByInput as ExpenseInput;
-		}
-		const expenses = await trpc(fetch).query('incomes:list', orderBy);
-		return { props: { expenses: expenses, orderBy: orderBy } };
-	};
-</script>
-
-<script lang="ts">
-	import ModalDialog from '$components/ModalDialog.svelte';
-	import AddIcon from '$components/icons/AddIcon.svelte';
-	import TextInput from '$components/inputs/TextInput.svelte';
-	import SelectInput from '$components/inputs/SelectInput.svelte';
-	import { paymentTypeSelect } from '$lib/model/PaymentTypes';
-	import CategorySelect from '$components/inputs/CategorySelect.svelte';
-	import NumberInput from '$components/inputs/NumberInput.svelte';
-	import DateInput from '$components/inputs/DateInput.svelte';
-	import ExpenseCard from '$components/ExpenseCard.svelte';
-	import CheckboxInput from '$components/inputs/CheckboxInput.svelte';
-	import { goto } from '$app/navigation';
-	import { browser } from '$app/env';
-	import ExpenseGroup from '$components/ExpenseGroup.svelte';
+	import type { Errors, PageData } from './$types';
 
 	type Expense = InferMutationInput<'incomes:save'>;
 	type Category = InferMutationInput<'categories:save'>;
+	type ExpenseInput = InferQueryInput<'incomes:list'>;
+
+	export let data: PageData;
+	//export let errors: Errors;
 
 	let editorErrors: Record<string, string> | undefined;
 
@@ -63,8 +48,8 @@
 		isIncome: true
 	});
 
-	export let expenses: InferQueryOutput<'incomes:list'> = [];
-	export let orderBy: ExpenseInput;
+	$: expenses = data.expenses;
+	$: orderBy = data.orderBy as ExpenseInput;
 
 	let expense = newExpense();
 	let category = newCategory();
@@ -73,7 +58,7 @@
 
 	const reloadExpenses = async () => {
 		loading = true;
-		expenses = await trpc().query('incomes:list', orderBy);
+		expenses = await trpc().query('incomes:list', orderBy as ExpenseInput);
 		loading = false;
 	};
 
@@ -116,7 +101,7 @@
 		}
 	];
 
-	let selectedOrder: ExpenseInput = orderBy;
+	let selectedOrder: ExpenseInput = orderBy as ExpenseInput;
 
 	const changeOrderUrl = (orderKey: string) => {
 		if (browser) {
@@ -142,8 +127,6 @@
 		<AddIcon /> Lägg till inkomst</button
 	>
 </div>
-
-<!-- Table example: https://github.com/TanStack/table/blob/main/examples/svelte/basic/src/App.svelte -->
 
 <ExpenseGroup groupBy={selectedOrder} {expenses} let:expense>
 	<ExpenseCard {expense} on:delete={() => reloadExpenses()} />
