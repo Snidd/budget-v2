@@ -15,20 +15,36 @@ export default trpc
 	})
 	.mutation('save', {
 		input: z.object({
-			id: z.number().nullable(),
-			comment: z.string().transform(trim),
+			id: z.number(),
+			comment: z.string().transform(trim).optional(),
+			value: z.number().optional(),
+			month: z
+				.object({
+					connect: z.object({ id: z.number() })
+				})
+				.optional(),
+			expense: z
+				.object({
+					connect: z.object({ id: z.number() })
+				})
+				.optional()
+		}),
+		resolve: ({ input: { id, ...data } }) =>
+			prismaClient.expenseValue.update({ data, where: { id }, select: { id: true } })
+	})
+	.mutation('create', {
+		input: z.object({
+			comment: z.string().transform(trim).optional(),
+			value: z.number(),
 			month: z.object({
 				connect: z.object({ id: z.number() })
 			}),
 			expense: z.object({
 				connect: z.object({ id: z.number() })
-			}),
-			value: z.number()
+			})
 		}),
-		resolve: ({ input: { id, ...data } }) =>
-			id
-				? prismaClient.expenseValue.update({ data, where: { id }, select: { id: true } })
-				: prismaClient.expenseValue.create({ data, select: { id: true } })
+		resolve: ({ input: { ...data } }) =>
+			prismaClient.expenseValue.create({ data, select: { id: true } })
 	})
 	.mutation('saveMultiple', {
 		input: z.array(
