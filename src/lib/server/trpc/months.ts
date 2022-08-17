@@ -24,8 +24,7 @@ export default trpc
 		}),
 		resolve: ({ input: { year, month } }) =>
 			prismaClient.month.findUnique({
-				where: { month_year: { month: month, year: year } },
-				include: { expenses: { include: { category: true } }, values: true }
+				where: { month_year: { month: month, year: year } }
 			})
 	})
 	.mutation('save', {

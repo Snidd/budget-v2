@@ -81,6 +81,43 @@ export default trpc
 				select: selectObject
 			})
 	})
+	.query('listByMonth', {
+		input: z.object({
+			year: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
+			month: z.number().or(z.string().regex(/^\d+$/).transform(Number))
+		}),
+		resolve: ({ input: { year, month } }) =>
+			prismaClient.expense.findMany({
+				where: { active: true },
+				select: {
+					category: {
+						select: {
+							name: true
+						}
+					},
+					createdAt: true,
+					defaultValue: true,
+					description: true,
+					duedate: true,
+					isIncome: true,
+					paymentType: true,
+					repeatingMonths: true,
+					id: true,
+					ExpenseValue: {
+						select: {
+							comment: true,
+							value: true
+						}
+					},
+					months: {
+						where: {
+							month: month,
+							year: year
+						}
+					}
+				}
+			})
+	})
 	.query('listByCategory', {
 		input: z.number(),
 		resolve: ({ input: categoryId }) =>

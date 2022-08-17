@@ -4,13 +4,14 @@ import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch, url, params }) => {
 	try {
-		const test = await trpc(fetch).query('months:list');
-		const month = await trpc(fetch).query('months:getByMonthAndYear', {
+		const monthParam = {
 			month: params.month,
 			year: params.year
-		});
-		console.log({ month });
-		return { month: month };
+		};
+		const month = await trpc(fetch).query('months:getByMonthAndYear', monthParam);
+		const expenses = await trpc(fetch).query('expenses:listByMonth', monthParam);
+
+		return { month: month, expenses: expenses };
 	} catch (err) {
 		throw error(500, String(err));
 	}

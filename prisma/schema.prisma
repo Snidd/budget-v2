@@ -21,7 +21,7 @@ model Expense {
   isIncome        Boolean        @default(false)
   repeatingMonths Int            @default(0)
   months          Month[]
-  ExpenseValue    ExpenseValue[]
+  expenseValue    ExpenseValue[]
 }
 
 model Month {
