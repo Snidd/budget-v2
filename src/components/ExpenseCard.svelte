@@ -8,7 +8,7 @@
 	import { format, formatDistance } from 'date-fns';
 	import { getPaymentTypeString } from '$lib/model/PaymentTypes';
 	import PaymentTypeBadge from './badges/PaymentTypeBadge.svelte';
-	import { formatSEK } from '$lib/utils';
+	import { formatMonthDistance, formatSEK } from '$lib/utils';
 
 	const dispatch = createEventDispatcher<{ delete: never }>();
 
@@ -29,20 +29,6 @@
 				deleting = false;
 			}
 		}
-	};
-
-	const getRepeatingMonthText = (repeatingMonths: number): string => {
-		if (repeatingMonths === null || repeatingMonths === 0) {
-			return '';
-		}
-		if (repeatingMonths === 1) {
-			return 'varje månad';
-		}
-		if (repeatingMonths === 2) {
-			return 'varannan månad';
-		}
-
-		return `var ${repeatingMonths}:e månad`;
 	};
 </script>
 
@@ -65,7 +51,7 @@
 			<h2 class="card-title">{expense.description}</h2>
 			<p>
 				{formatSEK(Number(expense.defaultValue))}
-				{getRepeatingMonthText(expense.repeatingMonths)}
+				{formatMonthDistance(expense.repeatingMonths)}
 			</p>
 			<div class="card-actions justify-end">
 				{#if expense.duedate != null}<p>

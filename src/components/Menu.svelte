@@ -1,5 +1,12 @@
-<script>
+<script lang="ts">
+	import type { InferQueryOutput } from '$lib/client/trpc';
+	import { formatMonth } from '$lib/utils';
+
 	import AddIcon from './icons/AddIcon.svelte';
+
+	type MonthOutput = InferQueryOutput<'months:list'>;
+
+	export let months: MonthOutput;
 </script>
 
 <div class="w-36">
@@ -14,7 +21,12 @@
 			<span>Månader</span>
 		</li>
 		<li><a href="/months/create"><AddIcon /> Öppna ny</a></li>
-		<li><a href="/months/2022/3">Mars, 2022</a></li>
-		<li><a href="/months/2022/4">April, 2022</a></li>
+		{#if months}
+			{#each months as month}
+				<li>
+					<a href="/months/{month.year}/{month.month}">{formatMonth(month.year, month.month)}</a>
+				</li>
+			{/each}
+		{/if}
 	</ul>
 </div>
