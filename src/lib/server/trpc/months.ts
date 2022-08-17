@@ -17,6 +17,17 @@ export default trpc
 				orderBy: [{ year: 'asc' }, { month: 'asc' }]
 			})
 	})
+	.query('getByMonthAndYear', {
+		input: z.object({
+			year: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
+			month: z.number().or(z.string().regex(/^\d+$/).transform(Number))
+		}),
+		resolve: ({ input: { year, month } }) =>
+			prismaClient.month.findUnique({
+				where: { month_year: { month: month, year: year } },
+				include: { expenses: true, values: true }
+			})
+	})
 	.mutation('save', {
 		input: z.object({
 			id: z.number().nullable(),
