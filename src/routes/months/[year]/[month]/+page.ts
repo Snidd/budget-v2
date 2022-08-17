@@ -9,6 +9,7 @@ export const load: PageLoad = async ({ fetch, url, params }) => {
 			month: params.month,
 			year: params.year
 		});
+		console.log({ month });
 		return { month: month };
 	} catch (err) {
 		throw error(500, String(err));
