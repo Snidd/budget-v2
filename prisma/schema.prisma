@@ -8,19 +8,20 @@ datasource db {
 }
 
 model Expense {
-  id              Int       @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
   description     String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   categoryId      Int
   paymentType     Int
-  category        Category  @relation(fields: [categoryId], references: [id])
+  category        Category       @relation(fields: [categoryId], references: [id])
   duedate         DateTime?
-  active          Boolean   @default(true)
+  active          Boolean        @default(true)
   defaultValue    Decimal?
-  isIncome        Boolean   @default(false)
-  repeatingMonths Int       @default(0)
+  isIncome        Boolean        @default(false)
+  repeatingMonths Int            @default(0)
   months          Month[]
+  ExpenseValue    ExpenseValue[]
 }
 
 model Month {
@@ -36,11 +37,13 @@ model Month {
 }
 
 model ExpenseValue {
-  id      Int     @id @default(autoincrement())
-  comment String  @default("")
-  value   Decimal
-  month   Month?  @relation(fields: [monthId], references: [id])
-  monthId Int?
+  id        Int     @id @default(autoincrement())
+  comment   String  @default("")
+  value     Decimal
+  month     Month?  @relation(fields: [monthId], references: [id])
+  monthId   Int?
+  expense   Expense @relation(fields: [expenseId], references: [id])
+  expenseId Int
 }
 
 model Category {
