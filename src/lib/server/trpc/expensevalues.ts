@@ -25,7 +25,12 @@ export default trpc
 		input: z.object({
 			id: z.number(),
 			comment: z.string().transform(trim).optional(),
-			value: z.number().optional(),
+			value: z.number().or(
+				z
+					.string()
+					.regex(/^[\d\,\.]+$/)
+					.transform(Number)
+			),
 			month: z
 				.object({
 					connect: z.object({ id: z.number() })

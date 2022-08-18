@@ -21,7 +21,7 @@
 				<th>Beskrivning</th>
 				<th>Kategori</th>
 				<th>Standard</th>
-				<th>Senast</th>
+				<th>Tidigare</th>
 				<th>Nytt värde</th>
 				<th>Kommentar</th>
 			</tr>
@@ -30,20 +30,24 @@
 			{#each expenses as expense}
 				<tr class="">
 					<th />
-					<td>{expense.description}</td>
-					<td><div class="badge badge-outline">{expense.category.name}</div></td>
-					<td>
+					<td class="align-top pt-8">{expense.description}</td>
+					<td class="align-top pt-8"
+						><div class="badge badge-outline">{expense.category.name}</div></td
+					>
+					<td class="align-top pt-8">
 						{#if expense.defaultValue !== null}
 							<span>{expense.isIncome ? '+' : '-'}</span>
 							<span>{formatSEK(expense.defaultValue)}</span>
 						{/if}
 					</td>
-					<ExpenseValueDisplay
-						currentMonth={month}
-						defaultValue={String(expense.defaultValue)}
-						expenseValues={expense.expenseValue}
-						isIncome={expense.isIncome}
-					/>
+					{#key expense.expenseValue}
+						<ExpenseValueDisplay
+							currentMonth={month}
+							defaultValue={String(expense.defaultValue)}
+							expenseValues={expense.expenseValue}
+							isIncome={expense.isIncome}
+						/>
+					{/key}
 				</tr>
 			{/each}
 		</tbody>
