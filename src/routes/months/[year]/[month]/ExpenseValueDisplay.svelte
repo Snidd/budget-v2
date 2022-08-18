@@ -1,20 +1,29 @@
 <script lang="ts">
+	import SpinnerIcon from '$components/icons/SpinnerIcon.svelte';
 	import type { InferQueryOutput } from '$lib/client/trpc';
 	import trpc from '$lib/client/trpc';
 	import { formatMonth, formatSEK } from '$lib/utils';
 	import { debounce } from '$lib/utils/debounce';
-	import type { Month } from '@prisma/client';
+	import type { Expense, Month } from '@prisma/client';
 	import { compareDesc } from 'date-fns';
 	import compareAsc from 'date-fns/compareAsc';
 	import { onMount, tick } from 'svelte';
 	import ExpenseValueTable from './ExpenseValueTable.svelte';
+	import { fade } from 'svelte/transition';
+	import getEditorErrors from '$lib/client/getEditorErrors';
+	import type { TRPCClientError } from '@trpc/client';
+	import type { Router } from '$lib/server/trpc';
+	import ErrorDisplay from '$components/ErrorDisplay.svelte';
 
 	export let defaultValue: string;
 	export let expenseValues: ExpenseValue[];
 	export let currentMonth: Month;
+	export let currentExpenseId: number;
 	export let isIncome: boolean;
 
 	type ExpenseValue = InferQueryOutput<'expensevalues:getById'>;
+
+	let editorErrors: Record<string, string> | undefined;
 
 	const evFilter = (ev: ExpenseValue) => {
 		if (ev?.monthId === currentMonth.id) return false;
@@ -55,15 +64,38 @@
 	let currentValue = filter(current?.value);
 	let currentComment = filter(current?.comment);
 
+	let isSaving = false;
+	let saveSuccessful = false;
+
 	onMount(() => {
 		currentValue = filter(current?.value);
 		currentComment = filter(current?.comment);
 	});
 
-	const saveExpenseValue = async () => {
-		if (current === null || current === undefined) return;
-		let id = current.id;
-		await tick();
+	const createExpenseValue = async () => {
+		console.log('creating...');
+		let response = await trpc().mutation('expensevalues:create', {
+			value: currentValue.length > 0 ? currentValue : undefined,
+			comment: currentComment,
+			expense: {
+				connect: {
+					id: currentExpenseId
+				}
+			},
+			month: {
+				connect: {
+					id: currentMonth.id
+				}
+			}
+		});
+		if (Array.isArray(expenseValues)) {
+			expenseValues.push(response);
+		} else {
+			expenseValues = [response];
+		}
+	};
+
+	const saveExpenseValue = async (id: number) => {
 		await trpc().mutation('expensevalues:save', {
 			id: id,
 			value: currentValue,
@@ -71,7 +103,33 @@
 		});
 	};
 
-	const debouncedSave = debounce(() => saveExpenseValue(), 500);
+	const saveOrUpdateExpenseValue = async () => {
+		console.log('entering save or update...');
+		editorErrors = undefined;
+		isSaving = true;
+		await tick();
+		try {
+			if (current === null || current === undefined) {
+				await createExpenseValue();
+			} else {
+				let id = current.id;
+				await saveExpenseValue(id);
+			}
+			isSaving = false;
+			saveSuccessful = true;
+			debouncedDone();
+		} catch (err) {
+			isSaving = false;
+			editorErrors = getEditorErrors(err as TRPCClientError<Router>);
+		}
+	};
+
+	const doneSaving = () => {
+		saveSuccessful = false;
+	};
+
+	const debouncedDone = debounce(() => doneSaving(), 1500);
+	const debouncedSaveOrUpdate = debounce(() => saveOrUpdateExpenseValue(), 500);
 </script>
 
 <td><ExpenseValueTable {isIncome} expenseValues={sorted} /> </td>
@@ -80,7 +138,7 @@
 		type="text"
 		placeholder={defaultValue === null ? '' : defaultValue}
 		class="input input-bordered w-full max-w-xs"
-		on:input={() => debouncedSave()}
+		on:input={() => debouncedSaveOrUpdate()}
 		bind:value={currentValue}
 	/>
 </td>
@@ -89,7 +147,13 @@
 		type="text"
 		placeholder=""
 		class="input input-bordered w-full max-w-xs"
-		on:input={() => debouncedSave()}
+		on:input={() => debouncedSaveOrUpdate()}
 		bind:value={currentComment}
 	/>
+</td>
+<td
+	>{#if isSaving}<p class="text-info" transition:fade>
+			Saving <SpinnerIcon />
+		</p>{:else if saveSuccessful}<p class="text-success" transition:fade>Saved.</p>{/if}
+	<ErrorDisplay {editorErrors} fields={['value', 'comment']} />
 </td>

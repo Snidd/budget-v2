@@ -48,7 +48,15 @@ export default trpc
 	.mutation('create', {
 		input: z.object({
 			comment: z.string().transform(trim).optional(),
-			value: z.number(),
+			value: z
+				.number()
+				.or(
+					z
+						.string()
+						.regex(/^[\d\,\.]+$/)
+						.transform(Number)
+				)
+				.optional(),
 			month: z.object({
 				connect: z.object({ id: z.number() })
 			}),
@@ -57,7 +65,7 @@ export default trpc
 			})
 		}),
 		resolve: ({ input: { ...data } }) =>
-			prismaClient.expenseValue.create({ data, select: { id: true } })
+			prismaClient.expenseValue.create({ data, include: { month: true } })
 	})
 	.mutation('saveMultiple', {
 		input: z.array(

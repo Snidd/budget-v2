@@ -42,6 +42,7 @@
 					</td>
 					{#key expense.expenseValue}
 						<ExpenseValueDisplay
+							currentExpenseId={expense.id}
 							currentMonth={month}
 							defaultValue={String(expense.defaultValue)}
 							expenseValues={expense.expenseValue}

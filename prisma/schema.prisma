@@ -37,12 +37,12 @@ model Month {
 }
 
 model ExpenseValue {
-  id        Int     @id @default(autoincrement())
-  comment   String  @default("")
-  value     Decimal
-  month     Month?  @relation(fields: [monthId], references: [id])
+  id        Int      @id @default(autoincrement())
+  comment   String   @default("")
+  value     Decimal?
+  month     Month?   @relation(fields: [monthId], references: [id])
   monthId   Int?
-  expense   Expense @relation(fields: [expenseId], references: [id])
+  expense   Expense  @relation(fields: [expenseId], references: [id])
   expenseId Int
 }
 
@@ -51,5 +51,6 @@ model Category {
   name     String
   order    Int       @default(0)
   isIncome Boolean   @default(false)
+  color    String    @default("rgb(31, 41, 55)")
   expenses Expense[]
 }
