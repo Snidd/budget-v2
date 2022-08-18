@@ -2,11 +2,12 @@
 	import { formatMonth, formatSEK } from '$lib/utils';
 
 	import type { Errors, PageData } from './$types';
+	import ExpenseValueDisplay from './ExpenseValueDisplay.svelte';
 
 	export let data: PageData;
 	export let errors: Errors;
 
-	$: ({ month } = data);
+	$: ({ month, expenses } = data);
 </script>
 
 {#if month}
@@ -26,7 +27,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each month.expenses as expense}
+			{#each expenses as expense}
 				<tr class="">
 					<th />
 					<td>{expense.description}</td>
@@ -37,17 +38,12 @@
 							<span>{formatSEK(expense.defaultValue)}</span>
 						{/if}
 					</td>
-					<td />
-					<td
-						><input
-							type="text"
-							placeholder={String(expense.defaultValue === null ? '' : expense.defaultValue)}
-							class="input input-bordered w-full max-w-xs"
-						/>
-					</td>
-					<td
-						><input type="text" placeholder="" class="input input-bordered w-full max-w-xs" />
-					</td>
+					<ExpenseValueDisplay
+						currentMonth={month}
+						defaultValue={String(expense.defaultValue)}
+						expenseValues={expense.expenseValue}
+						isIncome={expense.isIncome}
+					/>
 				</tr>
 			{/each}
 		</tbody>

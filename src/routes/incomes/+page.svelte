@@ -14,7 +14,7 @@
 	import getEditorErrors from '$lib/client/getEditorErrors';
 	import type { InferMutationInput, InferQueryInput, InferQueryOutput } from '$lib/client/trpc';
 	import trpc from '$lib/client/trpc';
-	import { PaymentTypes, paymentTypeSelect } from '$lib/model/PaymentTypes';
+	import { PaymentTypes, incomePaymentTypeSelect } from '$lib/model/PaymentTypes';
 	import type { Router } from '$lib/server/trpc';
 	import type { TRPCClientError } from '@trpc/client';
 	import type { Errors, PageData } from './$types';
@@ -150,7 +150,7 @@
 	<SelectInput
 		label="Betalningsmetod"
 		required={true}
-		values={paymentTypeSelect}
+		values={incomePaymentTypeSelect}
 		bind:value={expense.paymentType}
 		error={editorErrors?.paymentType}
 	/>

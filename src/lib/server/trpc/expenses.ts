@@ -103,10 +103,14 @@ export default trpc
 					paymentType: true,
 					repeatingMonths: true,
 					id: true,
-					ExpenseValue: {
+					expenseValue: {
 						select: {
+							id: true,
+							value: true,
 							comment: true,
-							value: true
+							month: true,
+							monthId: true,
+							expenseId: true
 						}
 					},
 					months: {

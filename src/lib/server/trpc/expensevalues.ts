@@ -13,6 +13,14 @@ export default trpc
 				where: { id: input }
 			})
 	})
+	.query('getById', {
+		input: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
+		resolve: ({ input: id }) =>
+			prismaClient.expenseValue.findUnique({
+				include: { month: true },
+				where: { id }
+			})
+	})
 	.mutation('save', {
 		input: z.object({
 			id: z.number(),
