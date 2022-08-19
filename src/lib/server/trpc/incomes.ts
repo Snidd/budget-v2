@@ -29,7 +29,7 @@ const selectObject = {
 	defaultValue: true,
 	isIncome: true,
 	paymentType: true,
-	category: { select: { name: true } }
+	category: { select: { name: true, color: true } }
 };
 
 export default trpc

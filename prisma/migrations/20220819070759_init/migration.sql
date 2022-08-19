@@ -26,16 +26,20 @@ CREATE TABLE "ExpenseMonth" (
 CREATE TABLE "ExpenseValue" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "comment" TEXT NOT NULL DEFAULT '',
-    "value" DECIMAL NOT NULL,
+    "value" DECIMAL,
     "monthId" INTEGER,
-    CONSTRAINT "ExpenseValue_monthId_fkey" FOREIGN KEY ("monthId") REFERENCES "ExpenseMonth" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    "expenseId" INTEGER NOT NULL,
+    CONSTRAINT "ExpenseValue_monthId_fkey" FOREIGN KEY ("monthId") REFERENCES "ExpenseMonth" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "ExpenseValue_expenseId_fkey" FOREIGN KEY ("expenseId") REFERENCES "Expense" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Category" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
-    "order" INTEGER NOT NULL DEFAULT 0
+    "order" INTEGER NOT NULL DEFAULT 0,
+    "isIncome" BOOLEAN NOT NULL DEFAULT false,
+    "color" TEXT NOT NULL DEFAULT 'rgb(31, 41, 55)'
 );
 
 -- CreateTable
@@ -48,6 +52,9 @@ CREATE TABLE "_ExpenseToMonth" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ExpenseMonth_month_year_key" ON "ExpenseMonth"("month", "year");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ExpenseValue_monthId_expenseId_key" ON "ExpenseValue"("monthId", "expenseId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_ExpenseToMonth_AB_unique" ON "_ExpenseToMonth"("A", "B");

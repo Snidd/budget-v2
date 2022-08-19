@@ -1,5 +1,6 @@
 import prismaClient from '$lib/server/prismaClient';
 import { trim } from '$lib/zodTransformer';
+import { prisma } from '@prisma/client';
 import * as trpc from '@trpc/server';
 import { z } from 'zod';
 
@@ -41,6 +42,47 @@ export default trpc
 			id
 				? prismaClient.month.update({ data, where: { id }, select: { id: true } })
 				: prismaClient.month.create({ data, select: { id: true } })
+	})
+	.mutation('createdefaultvalues', {
+		input: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
+		resolve: async ({ input: id }) => {
+			const expenses = await prismaClient.expense.findMany({
+				where: { months: { some: { id } } }
+			});
+
+			console.log(expenses.length);
+			console.log(expenses.map((exp) => exp.defaultValue));
+
+			let expenseValues = expenses
+				.filter((exp) => exp.defaultValue !== null)
+				.map((exp) => ({
+					comment: '',
+					value: exp.defaultValue,
+					month: {
+						connect: { id }
+					},
+					expense: {
+						connect: { id: exp.id }
+					}
+				}));
+
+			let results: { id: number }[] = [];
+
+			//TODO: Rebuild when moving from sqlite
+			for (var i = 0; i < expenseValues.length; i++) {
+				try {
+					const result = await prismaClient.expenseValue.create({
+						data: expenseValues[i],
+						select: { id: true }
+					});
+					results.push(result);
+				} catch (err) {
+					continue;
+				}
+			}
+
+			return results;
+		}
 	})
 	.mutation('delete', {
 		input: z.number(),

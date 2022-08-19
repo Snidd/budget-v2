@@ -17,6 +17,7 @@
 		<li><a href="/">Dashboard</a></li>
 		<li><a href="/expenses">Utgifter</a></li>
 		<li><a href="/incomes">Inkomster</a></li>
+		<li><a href="/categories">Kategorier</a></li>
 		<li class="menu-title">
 			<span>Månader</span>
 		</li>

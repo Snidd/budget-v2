@@ -46,6 +46,7 @@
 		id: null,
 		name: '',
 		order: 0,
+		color: '#000',
 		isIncome: false
 	});
 

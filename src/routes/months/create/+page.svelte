@@ -11,6 +11,7 @@
 	import type { TRPCClientError } from '@trpc/client';
 	import type { Router } from '$lib/server/trpc';
 	import { goto } from '$app/navigation';
+	import CategoryBadge from '$components/badges/CategoryBadge.svelte';
 
 	export let data: PageData;
 	export let errors: Errors;
@@ -132,7 +133,7 @@
 					>
 						<th />
 						<td>{expense.description}</td>
-						<td><div class="badge badge-outline">{expense.category.name}</div></td>
+						<td><CategoryBadge category={expense.category} /></td>
 						<td>
 							{#if expense.defaultValue !== null}
 								<span>{expense.isIncome ? '+' : '-'}</span>

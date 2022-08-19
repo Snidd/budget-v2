@@ -29,7 +29,7 @@ const selectObject = {
 	defaultValue: true,
 	isIncome: true,
 	paymentType: true,
-	category: { select: { name: true } }
+	category: { select: { name: true, color: true } }
 };
 
 export default trpc
@@ -89,10 +89,12 @@ export default trpc
 		resolve: ({ input: { year, month } }) =>
 			prismaClient.expense.findMany({
 				where: { active: true },
+				orderBy: [{ isIncome: 'asc' }, { category: { name: 'asc' } }],
 				select: {
 					category: {
 						select: {
-							name: true
+							name: true,
+							color: true
 						}
 					},
 					createdAt: true,

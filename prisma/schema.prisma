@@ -44,6 +44,8 @@ model ExpenseValue {
   monthId   Int?
   expense   Expense  @relation(fields: [expenseId], references: [id])
   expenseId Int
+
+  @@unique([monthId, expenseId])
 }
 
 model Category {

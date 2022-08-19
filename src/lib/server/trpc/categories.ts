@@ -9,10 +9,6 @@ export default trpc
 		input: z.boolean().default(false).optional(),
 		resolve: ({ input }) =>
 			prismaClient.category.findMany({
-				select: {
-					id: true,
-					name: true
-				},
 				where: { isIncome: input !== undefined ? input : false },
 				orderBy: [{ order: 'asc' }, { name: 'asc' }]
 			})
@@ -20,8 +16,9 @@ export default trpc
 	.mutation('save', {
 		input: z.object({
 			id: z.number().nullable(),
-			name: z.string().min(3).max(150).transform(trim),
+			name: z.string().min(2).max(150).transform(trim),
 			isIncome: z.boolean().default(false),
+			color: z.string(),
 			order: z.number().default(0)
 			/*price: z.string().refine(
 				(val) => {
