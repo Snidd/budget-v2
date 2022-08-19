@@ -46,7 +46,8 @@
 		id: null,
 		name: '',
 		order: 0,
-		isIncome: true
+		isIncome: true,
+		color: '#fff'
 	});
 
 	$: expenses = data.expenses;

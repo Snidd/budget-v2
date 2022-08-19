@@ -43,6 +43,21 @@ export default trpc
 				? prismaClient.month.update({ data, where: { id }, select: { id: true } })
 				: prismaClient.month.create({ data, select: { id: true } })
 	})
+	.mutation('addexpense', {
+		input: z.object({
+			monthId: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
+			value: z.number().optional(),
+			description: z.string().min(3).max(50).transform(trim),
+			categoryId: z.number().min(1, 'Should be selected')
+		}),
+		resolve: async ({ input: { monthId, ...data } }) => {
+			// create expense
+			let expData = {};
+			//const expense = await prismaClient.expense.create({ data: expData, select: { id: true } });
+			// link it to month
+			// create expensevalue
+		}
+	})
 	.mutation('createdefaultvalues', {
 		input: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
 		resolve: async ({ input: id }) => {
@@ -53,18 +68,16 @@ export default trpc
 			console.log(expenses.length);
 			console.log(expenses.map((exp) => exp.defaultValue));
 
-			let expenseValues = expenses
-				.filter((exp) => exp.defaultValue !== null)
-				.map((exp) => ({
-					comment: '',
-					value: exp.defaultValue,
-					month: {
-						connect: { id }
-					},
-					expense: {
-						connect: { id: exp.id }
-					}
-				}));
+			let expenseValues = expenses.map((exp) => ({
+				comment: '',
+				value: exp.defaultValue === null ? 0 : exp.defaultValue,
+				month: {
+					connect: { id }
+				},
+				expense: {
+					connect: { id: exp.id }
+				}
+			}));
 
 			let results: { id: number }[] = [];
 

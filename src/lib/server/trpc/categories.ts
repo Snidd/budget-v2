@@ -13,6 +13,12 @@ export default trpc
 				orderBy: [{ order: 'asc' }, { name: 'asc' }]
 			})
 	})
+	.query('listAll', {
+		resolve: () =>
+			prismaClient.category.findMany({
+				orderBy: [{ order: 'asc' }, { name: 'asc' }]
+			})
+	})
 	.mutation('save', {
 		input: z.object({
 			id: z.number().nullable(),

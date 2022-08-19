@@ -13,7 +13,7 @@
 	export let value: number;
 	export let newCategoryValue: string;
 	export let error: string | void;
-	export let isIncome: boolean = false;
+	export let isIncome: boolean | null = false;
 	export let createCategory: boolean;
 	export let categories: InferQueryOutput<'categories:list'> = [];
 
@@ -21,7 +21,11 @@
 
 	const reloadCategories = async () => {
 		loading = true;
-		categories = await trpc().query('categories:list', isIncome);
+		if (isIncome === null) {
+			categories = await trpc().query('categories:listAll');
+		} else {
+			categories = await trpc().query('categories:list', isIncome);
+		}
 		loading = false;
 	};
 
@@ -52,9 +56,10 @@
 					{/each}
 				{/if}
 			</select>
-			<button class="btn btn-secondary gap-2" on:click={() => (addCategory = true)}
-				><AddIcon /></button
-			>
+			{#if isIncome !== null}
+				<button class="btn btn-secondary gap-2" on:click={() => (addCategory = true)}
+					><AddIcon /></button
+				>{/if}
 		</div>
 		{#if error}
 			<small class="text-error">{error}</small>

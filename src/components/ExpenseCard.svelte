@@ -9,6 +9,7 @@
 	import { getPaymentTypeString } from '$lib/model/PaymentTypes';
 	import PaymentTypeBadge from './badges/PaymentTypeBadge.svelte';
 	import { formatMonthDistance, formatSEK } from '$lib/utils';
+	import CategoryBadge from './badges/CategoryBadge.svelte';
 
 	const dispatch = createEventDispatcher<{ delete: never }>();
 
@@ -36,7 +37,7 @@
 	<div class="card w-96 bg-base-100 shadow-xl">
 		<div class="card-body">
 			<div class="card-actions justify-between">
-				<div class="badge badge-outline -ml-2">{expense.category.name}</div>
+				<CategoryBadge category={expense.category} />
 				<button
 					class="btn btn-xs hover:opacity-80 btn-error gap-2 {deleting ? 'btn-disabled' : ''}"
 					on:click={() => deleteExpense()}
