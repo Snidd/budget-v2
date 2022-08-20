@@ -12,6 +12,7 @@
 	import type { Router } from '$lib/server/trpc';
 	import { goto } from '$app/navigation';
 	import CategoryBadge from '$components/badges/CategoryBadge.svelte';
+	import { months } from '$lib/stores/months';
 
 	export let data: PageData;
 	export let errors: Errors;
@@ -33,14 +34,14 @@
 
 	let editorErrors: Record<string, string> | undefined;
 
-	let months = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+	let monthsArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 	let year = [2022, 2023];
 
 	function capitalizeFirstLetter(string: string) {
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	}
 
-	let monthNames = months.map((month) => {
+	let monthNames = monthsArray.map((month) => {
 		let objDate = new Date();
 		objDate.setMonth(month);
 		objDate.setDate(1);
@@ -73,8 +74,9 @@
 			let successMonth = month.month;
 			let successYear = month.year;
 			await trpc().mutation('months:save', month);
-			month = newMonth();
+			newMonth();
 			//TODO: reloadMonths here
+			$months = await trpc(fetch).query('months:list');
 			goto(`/months/${successYear}/${successMonth}`);
 		} catch (err) {
 			editorErrors = getEditorErrors(err as TRPCClientError<Router>);
@@ -90,7 +92,7 @@
 			</label>
 			<select id="monthSelector" class="select select-bordered" bind:value={month.month}>
 				<option disabled value={-1}>Välj månad</option>
-				{#each months as value, index}
+				{#each monthsArray as value, index}
 					<option {value}>{monthNames[index]}</option>
 				{/each}
 			</select>

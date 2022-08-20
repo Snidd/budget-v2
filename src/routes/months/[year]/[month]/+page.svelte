@@ -15,6 +15,7 @@
 	import { PaymentTypes } from '$lib/model/PaymentTypes';
 	import NumberInput from '$components/inputs/NumberInput.svelte';
 	import CategorySelect from '$components/inputs/CategorySelect.svelte';
+	import EditIcon from '$components/icons/EditIcon.svelte';
 
 	type Expense = InferMutationInput<'incomes:save'>;
 	type ExpenseValue = InferMutationInput<'expensevalues:create'>;
@@ -88,19 +89,14 @@
 
 	const handleSaveDialog = async () => {
 		try {
-			const result = await trpc().mutation('expenses:save', expense);
-			if (expense.id === null) return;
-			let ev: ExpenseValue = {
-				value: String(expense.defaultValue),
-				expense: {
-					connect: { id: expense.id }
-				},
-				comment: '',
-				month: {
-					connect: { id: month?.id === undefined ? -1 : month.id }
-				}
-			};
-			await trpc().mutation('expensevalues:create', ev);
+			if (month?.id === undefined) return;
+
+			const result = await trpc().mutation('months:addexpense', {
+				categoryId: expense.categoryId,
+				description: expense.description,
+				monthId: month.id,
+				value: expense.defaultValue
+			});
 			showAddDialog = false;
 			reloadExpenses();
 		} catch (err) {
@@ -112,8 +108,11 @@
 {#if month}
 	<div class="flex content-start gap-4">
 		<h1 class="font-bold text-xl mb-4">{formatMonth(month.year, month.month)}</h1>
-		<button class="btn btn-primary btn-sm" disabled={loading} on:click={() => fillStandard()}
-			>Fyll i med standardvärden {#if loading}<SpinnerIcon />{/if}</button
+		<button class="btn btn-primary btn-sm gap-2" disabled={loading} on:click={() => fillStandard()}
+			><EditIcon /> Fyll i med standardvärden {#if loading}<SpinnerIcon />{/if}</button
+		>
+		<button class="btn-accent btn btn-sm gap-2" on:click={() => (showAddDialog = true)}
+			><AddIcon /> Lägg till engångspost</button
 		>
 		<ErrorDisplay {editorErrors} fields={'id'} />
 	</div>
@@ -156,9 +155,7 @@
 			{/each}
 		</tbody>
 	</table>
-	<button class="btn-accent btn gap-2" on:click={() => (showAddDialog = true)}
-		><AddIcon /> Lägg till engångspost</button
-	>
+
 	<ModalDialog
 		on:save={() => handleSaveDialog()}
 		on:close={() => handleCloseDialog()}
@@ -173,9 +170,9 @@
 			error={editorErrors?.description}
 		/>
 		<NumberInput
-			label="Värde"
+			label="Värde (använd minus om det är en utgift)"
 			bind:value={expense.defaultValue}
-			placeholder="0"
+			placeholder="-200"
 			suffix="SEK"
 			required={false}
 			error={editorErrors?.defaultValue}

@@ -61,7 +61,7 @@ export default trpc
 			}
 			return prismaClient.expense.findMany({
 				select: selectObject,
-				where: { isIncome: true },
+				where: { isIncome: true, active: true },
 				orderBy: orderArray
 			});
 		}

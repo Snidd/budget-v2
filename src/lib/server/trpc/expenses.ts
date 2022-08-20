@@ -17,7 +17,6 @@ const booleanSchema = z.preprocess((arg) => {
 
 type DateSchema = z.infer<typeof dateSchema>;
 type BooleanSchema = z.infer<typeof booleanSchema>;
-
 type ExpenseSelect = Prisma.ExpenseSelect;
 
 const selectObject = {
@@ -61,7 +60,7 @@ export default trpc
 			}
 			return prismaClient.expense.findMany({
 				select: selectObject,
-				where: { isIncome: false },
+				where: { isIncome: false, active: true },
 				orderBy: orderArray
 			});
 		}
@@ -88,7 +87,6 @@ export default trpc
 		}),
 		resolve: ({ input: { year, month } }) =>
 			prismaClient.expense.findMany({
-				where: { active: true },
 				orderBy: [{ isIncome: 'asc' }, { category: { name: 'asc' } }],
 				select: {
 					category: {
@@ -151,5 +149,13 @@ export default trpc
 	})
 	.mutation('delete', {
 		input: z.number(),
-		resolve: ({ input: id }) => prismaClient.expense.delete({ where: { id } }).then(() => undefined)
+		resolve: async ({ input: id }) => {
+			await prismaClient.expenseValue.deleteMany({
+				where: {
+					expenseId: id
+				}
+			});
+
+			return await prismaClient.expense.delete({ where: { id } }).then(() => undefined);
+		}
 	});

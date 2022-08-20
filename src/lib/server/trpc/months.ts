@@ -1,3 +1,4 @@
+import { PaymentTypes } from '$lib/model/PaymentTypes';
 import prismaClient from '$lib/server/prismaClient';
 import { trim } from '$lib/zodTransformer';
 import { prisma } from '@prisma/client';
@@ -51,11 +52,54 @@ export default trpc
 			categoryId: z.number().min(1, 'Should be selected')
 		}),
 		resolve: async ({ input: { monthId, ...data } }) => {
+			const isIncome = data.value !== undefined && data.value > 0;
+			if (!isIncome && data.value !== undefined) {
+				data.value = Math.abs(data.value);
+			}
+			console.log(data.value);
 			// create expense
-			let expData = {};
-			//const expense = await prismaClient.expense.create({ data: expData, select: { id: true } });
+			let expData = {
+				defaultValue: data.value,
+				description: data.description,
+				categoryId: data.categoryId,
+				paymentType: PaymentTypes.NORMAL,
+				active: false,
+				isIncome: isIncome,
+				repeatingMonths: 0
+			};
+			const expense = await prismaClient.expense.create({ data: expData, select: { id: true } });
+
 			// link it to month
+			await prismaClient.month.update({
+				data: {
+					expenses: {
+						connect: {
+							id: expense.id
+						}
+					}
+				},
+				where: { id: monthId }
+			});
+
 			// create expensevalue
+			let ev = await prismaClient.expenseValue.create({
+				data: {
+					value: data.value,
+					comment: '',
+					expense: {
+						connect: {
+							id: expense.id
+						}
+					},
+					month: {
+						connect: {
+							id: monthId
+						}
+					}
+				}
+			});
+
+			return ev;
 		}
 	})
 	.mutation('createdefaultvalues', {
