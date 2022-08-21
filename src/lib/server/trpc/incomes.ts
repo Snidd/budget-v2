@@ -89,10 +89,23 @@ export default trpc
 			description: z.string().min(3).max(50).transform(trim),
 			paymentType: z.nativeEnum(PaymentTypes),
 			categoryId: z.number().min(1, 'Should be selected'),
-			repeatingMonths: z.number(),
-			duedate: dateSchema.optional(),
+			repeatingMonths: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
+			duedate: dateSchema.nullable().optional(),
 			active: z.boolean().default(true),
-			defaultValue: z.number().or(z.string().regex(/^\d+$/).transform(Number)).optional(),
+			defaultValue: z
+				.string()
+				.refine(
+					(val) => {
+						try {
+							new Decimal(val);
+							return true;
+						} catch {
+							return false;
+						}
+					},
+					{ message: 'Valid number required' }
+				)
+				.optional(),
 			isIncome: z.boolean().default(false)
 		}),
 		resolve: ({ input: { id, ...data } }) =>

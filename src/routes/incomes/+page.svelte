@@ -53,7 +53,7 @@
 	$: expenses = data.expenses;
 	$: orderBy = data.orderBy as ExpenseInput;
 
-	let expense = newExpense();
+	let currentExpense = newExpense();
 	let category = newCategory();
 	let expenseDialogVisible = false;
 	let loading = false;
@@ -66,14 +66,14 @@
 
 	const handleEditorClose = () => {
 		expenseDialogVisible = false;
-		expense = newExpense();
+		currentExpense = newExpense();
 	};
 
 	const handleEditorSave = async () => {
 		if (category.name && category.name.length > 0) {
 			try {
 				const newCategoryResult = await trpc().mutation('categories:save', category);
-				expense.categoryId = newCategoryResult.id;
+				currentExpense.categoryId = newCategoryResult.id;
 				category = newCategory();
 			} catch (err) {
 				editorErrors = getEditorErrors(err as TRPCClientError<Router>);
@@ -83,9 +83,9 @@
 
 		//save expense
 		try {
-			await trpc().mutation('incomes:save', expense);
+			await trpc().mutation('incomes:save', currentExpense);
 			expenseDialogVisible = false;
-			expense = newExpense();
+			currentExpense = newExpense();
 			reloadExpenses();
 		} catch (err) {
 			editorErrors = getEditorErrors(err as TRPCClientError<Router>);
@@ -132,7 +132,21 @@
 	</div>
 
 	<ExpenseGroup groupBy={selectedOrder} {expenses} let:expense>
-		<ExpenseCard {expense} on:delete={() => reloadExpenses()} />
+		<ExpenseCard
+			{expense}
+			on:delete={() => reloadExpenses()}
+			on:edit={(event) => {
+				let eventExpense = event.detail.expense;
+				if (eventExpense === null) return;
+				let convertedExpense = {
+					...eventExpense,
+					defaultValue: eventExpense.defaultValue?.toString(),
+					duedate: eventExpense.duedate === null ? undefined : eventExpense.duedate
+				};
+				currentExpense = convertedExpense;
+				expenseDialogVisible = true;
+			}}
+		/>
 	</ExpenseGroup>
 </LoadingWithErrors>
 <ModalDialog
@@ -145,19 +159,19 @@
 		label="Beskrivning"
 		required={true}
 		placeholder="Beskriv utgiften"
-		bind:value={expense.description}
+		bind:value={currentExpense.description}
 		error={editorErrors?.description}
 	/>
 	<SelectInput
 		label="Betalningsmetod"
 		required={true}
 		values={incomePaymentTypeSelect}
-		bind:value={expense.paymentType}
+		bind:value={currentExpense.paymentType}
 		error={editorErrors?.paymentType}
 	/>
 	<CategorySelect
 		label="Kategori"
-		bind:value={expense.categoryId}
+		bind:value={currentExpense.categoryId}
 		bind:newCategoryValue={category.name}
 		createCategory={false}
 		isIncome={true}
@@ -165,7 +179,7 @@
 	/>
 	<NumberInput
 		label="Standardkostnad"
-		bind:value={expense.defaultValue}
+		bind:value={currentExpense.defaultValue}
 		placeholder="0"
 		suffix="SEK"
 		required={false}
@@ -173,7 +187,7 @@
 	/>
 	<NumberInput
 		label="Återkommande var X månad?"
-		bind:value={expense.repeatingMonths}
+		bind:value={currentExpense.repeatingMonths}
 		prefix="Var"
 		suffix="månad"
 		placeholder="0"
@@ -184,7 +198,7 @@
 		label="Förfallodatum"
 		placeholder=""
 		required={false}
-		bind:value={expense.duedate}
+		bind:date={currentExpense.duedate}
 		error={editorErrors?.duedate}
 	/>
 </ModalDialog>
