@@ -26,17 +26,6 @@ export default trpc
 			isIncome: z.boolean().default(false),
 			color: z.string(),
 			order: z.number().default(0)
-			/*price: z.string().refine(
-				(val) => {
-					try {
-						new Decimal(val);
-						return true;
-					} catch {
-						return false;
-					}
-				},
-				{ message: 'Valid number required' }
-			),*/
 		}),
 		resolve: ({ input: { id, ...data } }) =>
 			id

@@ -10,10 +10,18 @@
 	import PaymentTypeBadge from './badges/PaymentTypeBadge.svelte';
 	import { formatMonthDistance, formatSEK } from '$lib/utils';
 	import CategoryBadge from './badges/CategoryBadge.svelte';
+	import EditIcon from './icons/EditIcon.svelte';
 
-	const dispatch = createEventDispatcher<{ delete: never }>();
+	type Expense = InferQueryOutput<'expenses:getById'>;
 
-	export let expense: InferQueryOutput<'expenses:getById'>;
+	const dispatch = createEventDispatcher<{
+		delete: never;
+		edit: {
+			expense: Expense;
+		};
+	}>();
+
+	export let expense: Expense;
 
 	let deleting = false;
 
@@ -38,16 +46,24 @@
 		<div class="card-body">
 			<div class="card-actions justify-between">
 				<CategoryBadge category={expense.category} />
-				<button
-					class="btn btn-xs hover:opacity-80 btn-error gap-2 {deleting ? 'btn-disabled' : ''}"
-					on:click={() => deleteExpense()}
-				>
-					{#if deleting}
-						<SpinnerIcon />
-					{:else}
-						<DeleteIcon />
-					{/if}
-				</button>
+				<div class="flex gap-2">
+					<button
+						class="btn btn-xs hover:opacity-80 btn-accent"
+						on:click={() => dispatch('edit', { expense: expense })}
+					>
+						<EditIcon />
+					</button>
+					<button
+						class="btn btn-xs hover:opacity-80 btn-error gap-2 {deleting ? 'btn-disabled' : ''}"
+						on:click={() => deleteExpense()}
+					>
+						{#if deleting}
+							<SpinnerIcon />
+						{:else}
+							<DeleteIcon />
+						{/if}
+					</button>
+				</div>
 			</div>
 			<h2 class="card-title">{expense.description}</h2>
 			<p>

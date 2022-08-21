@@ -4,7 +4,7 @@
 	export let label: string;
 	export let required = false;
 	export let placeholder = '';
-	export let value: number | undefined;
+	export let value: number | string | undefined;
 	export let error: string | void;
 	export let suffix = '';
 	export let prefix = '';
@@ -24,7 +24,7 @@
 		<input
 			{id}
 			class="input input-bordered w-36"
-			type="number"
+			type="text"
 			{placeholder}
 			{required}
 			aria-invalid={error ? 'true' : undefined}

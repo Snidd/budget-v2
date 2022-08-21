@@ -95,7 +95,7 @@
 				categoryId: expense.categoryId,
 				description: expense.description,
 				monthId: month.id,
-				value: expense.defaultValue
+				value: expense.defaultValue !== undefined ? Number(expense.defaultValue) : undefined
 			});
 			showAddDialog = false;
 			reloadExpenses();

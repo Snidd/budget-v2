@@ -29,7 +29,8 @@ const selectObject = {
 	defaultValue: true,
 	isIncome: true,
 	paymentType: true,
-	category: { select: { name: true, color: true } }
+	category: { select: { name: true, color: true } },
+	categoryId: true
 };
 
 export default trpc
@@ -91,7 +92,7 @@ export default trpc
 			repeatingMonths: z.number(),
 			duedate: dateSchema.optional(),
 			active: z.boolean().default(true),
-			defaultValue: z.number().optional(),
+			defaultValue: z.number().or(z.string().regex(/^\d+$/).transform(Number)).optional(),
 			isIncome: z.boolean().default(false)
 		}),
 		resolve: ({ input: { id, ...data } }) =>

@@ -4,6 +4,7 @@
 	import trpc, { type InferQueryOutput } from '$lib/client/trpc';
 
 	import type { SelectElements } from '$lib/model/PaymentTypes';
+	import { onMount, tick } from 'svelte';
 
 	import LabelAsterisk from './LabelAsterisk.svelte';
 	import TextInput from './TextInput.svelte';
@@ -20,18 +21,22 @@
 	let loading = true;
 
 	const reloadCategories = async () => {
+		let existingCategoryId = value;
 		loading = true;
 		if (isIncome === null) {
 			categories = await trpc().query('categories:listAll');
 		} else {
 			categories = await trpc().query('categories:list', isIncome);
 		}
+		await tick();
+		console.log(existingCategoryId);
+		value = existingCategoryId;
 		loading = false;
 	};
 
 	let addCategory = createCategory;
 
-	reloadCategories();
+	onMount(() => reloadCategories());
 
 	const id = `categoryinput-${label}`.replaceAll(' ', '-');
 </script>
@@ -49,10 +54,12 @@
 				aria-invalid={error ? 'true' : undefined}
 				bind:value
 			>
-				<option disabled selected value={-1}>Välj kategori...</option>
+				{#if value === -1}
+					<option disabled selected value={-1}>Välj kategori...</option>
+				{/if}
 				{#if !loading}
 					{#each categories as category}
-						<option value={category.id}>{category.name}</option>
+						<option selected={value === category.id} value={category.id}>{category.name}</option>
 					{/each}
 				{/if}
 			</select>

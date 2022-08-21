@@ -1,11 +1,32 @@
 <script lang="ts">
+	import { format } from 'date-fns';
+
 	import LabelAsterisk from './LabelAsterisk.svelte';
 
 	export let label: string;
 	export let required = false;
 	export let placeholder = '';
-	export let value: Date | undefined;
+	export let date: Date | null | undefined;
+
+	let value: string;
+
 	export let error: string | void;
+
+	const input = (x: Date | undefined | null) => {
+		if (x === undefined || x === null) return;
+		value = format(x !== undefined ? x : new Date(), 'yyyy-MM-dd');
+	};
+
+	const output = (x: string) => {
+		if (x === '' || x === undefined) {
+			date = null;
+			return;
+		}
+		date = new Date(x);
+	};
+
+	$: input(date);
+	$: output(value);
 
 	const id = `dateinput-${label}`.replaceAll(' ', '-');
 </script>
