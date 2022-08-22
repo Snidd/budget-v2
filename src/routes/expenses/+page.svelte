@@ -22,6 +22,7 @@
 	type Expense = InferMutationInput<'expenses:save'>;
 	type Category = InferMutationInput<'categories:save'>;
 	type ExpenseInput = InferQueryInput<'expenses:list'>;
+	type SingleExpense = InferQueryOutput<'expenses:getById'>;
 
 	let editorErrors: Record<string, string> | undefined;
 
@@ -93,6 +94,17 @@
 		}
 	};
 
+	const handleExpenseEdit = async (inputExpense: SingleExpense) => {
+		if (inputExpense === null) return;
+		let convertedExpense = {
+			...inputExpense,
+			defaultValue: inputExpense.defaultValue?.toString(),
+			duedate: inputExpense.duedate === null ? undefined : inputExpense.duedate
+		};
+		currentExpense = convertedExpense;
+		expenseDialogVisible = true;
+	};
+
 	const orderByValues = [
 		{
 			name: 'Kategori',
@@ -140,17 +152,7 @@
 		<ExpenseCard
 			{expense}
 			on:delete={() => reloadExpenses()}
-			on:edit={(event) => {
-				let eventExpense = event.detail.expense;
-				if (eventExpense === null) return;
-				let convertedExpense = {
-					...eventExpense,
-					defaultValue: eventExpense.defaultValue?.toString(),
-					duedate: eventExpense.duedate === null ? undefined : eventExpense.duedate
-				};
-				currentExpense = convertedExpense;
-				expenseDialogVisible = true;
-			}}
+			on:edit={(event) => handleExpenseEdit(event.detail.expense)}
 		/>
 	</ExpenseGroup>
 </LoadingWithErrors>

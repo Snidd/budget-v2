@@ -7,7 +7,7 @@
 	import type { Expense, Month } from '@prisma/client';
 	import { compareDesc } from 'date-fns';
 	import compareAsc from 'date-fns/compareAsc';
-	import { onMount, tick } from 'svelte';
+	import { createEventDispatcher, onMount, tick } from 'svelte';
 	import ExpenseValueTable from './ExpenseValueTable.svelte';
 	import { fade } from 'svelte/transition';
 	import getEditorErrors from '$lib/client/getEditorErrors';
@@ -15,13 +15,15 @@
 	import type { Router } from '$lib/server/trpc';
 	import ErrorDisplay from '$components/ErrorDisplay.svelte';
 
+	type ExpenseValue = InferQueryOutput<'expensevalues:getById'>;
+
 	export let defaultValue: string;
 	export let expenseValues: ExpenseValue[];
 	export let currentMonth: Month;
 	export let currentExpenseId: number;
 	export let isIncome: boolean;
 
-	type ExpenseValue = InferQueryOutput<'expensevalues:getById'>;
+	const dispatch = createEventDispatcher<{ update: never }>();
 
 	let editorErrors: Record<string, string> | undefined;
 
@@ -117,6 +119,7 @@
 			}
 			isSaving = false;
 			saveSuccessful = true;
+			dispatch('update');
 			debouncedDone();
 		} catch (err) {
 			isSaving = false;
@@ -151,9 +154,11 @@
 		bind:value={currentComment}
 	/>
 </td>
-<td
-	>{#if isSaving}<p class="text-info" transition:fade>
-			Saving <SpinnerIcon />
-		</p>{:else if saveSuccessful}<p class="text-success" transition:fade>Saved.</p>{/if}
+<td class="w-32"
+	>{#if isSaving}
+		<p class="text-info flex gap-2" transition:fade>Saving <SpinnerIcon /></p>
+	{:else if saveSuccessful}
+		<p class="text-success" transition:fade>Saved.</p>
+	{/if}
 	<ErrorDisplay {editorErrors} fields={['value', 'comment']} />
 </td>

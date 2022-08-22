@@ -16,6 +16,7 @@
 	import NumberInput from '$components/inputs/NumberInput.svelte';
 	import CategorySelect from '$components/inputs/CategorySelect.svelte';
 	import EditIcon from '$components/icons/EditIcon.svelte';
+	import MonthSummary from './MonthSummary.svelte';
 
 	type Expense = InferMutationInput<'incomes:save'>;
 	type ExpenseValue = InferMutationInput<'expensevalues:create'>;
@@ -64,7 +65,7 @@
 			paymentType: PaymentTypes.NORMAL,
 			description: '',
 			repeatingMonths: 0,
-			defaultValue: 0,
+			defaultValue: undefined,
 			duedate: undefined,
 			isIncome: false,
 			active: false
@@ -144,6 +145,7 @@
 					</td>
 					{#key expense.expenseValue}
 						<ExpenseValueDisplay
+							on:update={reloadExpenses}
 							currentExpenseId={expense.id}
 							currentMonth={month}
 							defaultValue={String(expense.defaultValue)}
@@ -155,6 +157,8 @@
 			{/each}
 		</tbody>
 	</table>
+
+	<MonthSummary {expenses} monthId={month.id} />
 
 	<ModalDialog
 		on:save={() => handleSaveDialog()}

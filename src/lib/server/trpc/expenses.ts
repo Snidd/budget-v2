@@ -6,6 +6,7 @@ import * as trpc from '@trpc/server';
 import Decimal from 'decimal.js';
 import { string, z } from 'zod';
 import categories from './categories';
+import { ca } from 'date-fns/locale';
 
 const dateSchema = z.preprocess((arg) => {
 	if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
@@ -86,42 +87,30 @@ export default trpc
 			year: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
 			month: z.number().or(z.string().regex(/^\d+$/).transform(Number))
 		}),
-		resolve: ({ input: { year, month } }) =>
-			prismaClient.expense.findMany({
-				orderBy: [{ isIncome: 'asc' }, { category: { name: 'asc' } }],
-				select: {
-					category: {
-						select: {
-							name: true,
-							color: true
-						}
-					},
-					createdAt: true,
-					defaultValue: true,
-					description: true,
-					duedate: true,
-					isIncome: true,
-					paymentType: true,
-					repeatingMonths: true,
-					id: true,
-					expenseValue: {
-						select: {
-							id: true,
-							value: true,
-							comment: true,
-							month: true,
-							monthId: true,
-							expenseId: true
-						}
-					},
-					months: {
-						where: {
-							month: month,
-							year: year
+		resolve: async ({ input: { year, month } }) => {
+			const dbMonth = await prismaClient.month.findUnique({
+				where: {
+					month_year: {
+						month: month,
+						year: year
+					}
+				},
+				include: {
+					expenses: {
+						include: {
+							expenseValue: {
+								include: {
+									month: true
+								}
+							},
+							category: true
 						}
 					}
 				}
-			})
+			});
+			if (dbMonth === null) return [];
+			return dbMonth.expenses;
+		}
 	})
 	.query('listByCategory', {
 		input: z.number(),
