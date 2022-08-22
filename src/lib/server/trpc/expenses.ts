@@ -70,7 +70,12 @@ export default trpc
 	.query('listAll', {
 		resolve: () =>
 			prismaClient.expense.findMany({
-				select: selectObject,
+				select: {
+					...selectObject,
+					expenseValue: {
+						include: { month: true }
+					}
+				},
 				orderBy: [{ isIncome: 'asc' }, { category: { name: 'asc' } }]
 			})
 	})

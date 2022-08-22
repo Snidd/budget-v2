@@ -21,6 +21,13 @@ export default trpc
 				where: { id }
 			})
 	})
+	.query('getByIdWithoutMonth', {
+		input: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
+		resolve: ({ input: id }) =>
+			prismaClient.expenseValue.findUnique({
+				where: { id }
+			})
+	})
 	.mutation('save', {
 		input: z.object({
 			id: z.number(),
