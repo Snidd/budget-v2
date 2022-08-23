@@ -141,9 +141,9 @@
 </td>
 <td class="w-32"
 	>{#if isSaving}
-		<p class="text-info flex gap-2" transition:fade>Saving <SpinnerIcon /></p>
+		<p class="text-info flex gap-2" transition:fade>Sparar <SpinnerIcon /></p>
 	{:else if saveSuccessful}
-		<p class="text-success" transition:fade>Saved.</p>
+		<p class="text-success" transition:fade>Sparat.</p>
 	{/if}
 	<ErrorDisplay {editorErrors} fields={['value', 'comment']} />
 </td>

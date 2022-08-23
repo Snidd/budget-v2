@@ -24,6 +24,7 @@
 	import MonthSummary from './MonthSummary.svelte';
 	import PaymentTypeSummary from './PaymentTypeSummary.svelte';
 	import SelectInput from '$components/inputs/SelectInput.svelte';
+	import { invalidate } from '$app/navigation';
 
 	type Expense = InferMutationInput<'incomes:save'>;
 	type ExpenseValue = InferMutationInput<'expensevalues:create'>;
@@ -52,14 +53,10 @@
 	};
 
 	const reloadExpenses = async () => {
-		let monthNumber = month?.month;
-		let year = month?.year;
-		if (monthNumber !== undefined && year !== undefined) {
-			expenses = await trpc().query('expenses:listByMonth', {
-				month: monthNumber,
-				year: year
-			});
-		}
+		expenses = await trpc(fetch).query('expenses:listByMonth', {
+			month: month.month,
+			year: month.year
+		});
 	};
 
 	let showAddDialog = false;
@@ -152,7 +149,7 @@
 							<span>{formatSEK(expense.defaultValue)}</span>
 						{/if}
 					</td>
-					{#key expense.expenseValue}
+					{#key month}
 						<ExpenseValueDisplay
 							on:update={reloadExpenses}
 							currentExpenseId={expense.id}
