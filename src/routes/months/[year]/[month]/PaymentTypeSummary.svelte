@@ -29,16 +29,34 @@
 		let paymentTypeWithSum = { ...paymentTypeWithValues, sum: sum };
 		return paymentTypeWithSum;
 	};
+
+	$: creditSum = getPaymentTypeSum(expenses, monthId, PaymentTypes.CREDIT).sum;
+	$: klarnaSum = getPaymentTypeSum(expenses, monthId, PaymentTypes.KLARNA).sum;
 </script>
 
-<tr>
-	<td class="bg-orange-200">remember</td>
-	{#each lastFiveMonths as month}
+{#if creditSum && creditSum.greaterThan(0)}
+	<tr>
+		<td class="bg-orange-200">remember</td>
+		{#each lastFiveMonths as month}
+			<td class="bg-orange-200"
+				>{formatSEK(getPaymentTypeSum(expenses, month.id, PaymentTypes.CREDIT).sum)}</td
+			>
+		{/each}
 		<td class="bg-orange-200"
-			>{formatSEK(getPaymentTypeSum(expenses, month.id, PaymentTypes.CREDIT).sum)}</td
+			>{formatSEK(getPaymentTypeSum(expenses, monthId, PaymentTypes.CREDIT).sum)}</td
 		>
-	{/each}
-	<td class="bg-orange-200"
-		>{formatSEK(getPaymentTypeSum(expenses, monthId, PaymentTypes.CREDIT).sum)}</td
-	>
-</tr>
+	</tr>
+{/if}
+{#if klarnaSum && klarnaSum.greaterThan(0)}
+	<tr>
+		<td class="bg-blue-200">Klarna</td>
+		{#each lastFiveMonths as month}
+			<td class="bg-blue-200"
+				>{formatSEK(getPaymentTypeSum(expenses, month.id, PaymentTypes.KLARNA).sum)}</td
+			>
+		{/each}
+		<td class="bg-blue-200"
+			>{formatSEK(getPaymentTypeSum(expenses, monthId, PaymentTypes.KLARNA).sum)}</td
+		>
+	</tr>
+{/if}

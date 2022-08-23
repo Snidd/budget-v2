@@ -49,6 +49,7 @@ export default trpc
 			monthId: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
 			value: z.number().optional(),
 			description: z.string().min(3).max(50).transform(trim),
+			paymentType: z.number().or(z.string().regex(/^\d+$/).transform(Number)).optional().default(0),
 			categoryId: z.number().min(1, 'Should be selected')
 		}),
 		resolve: async ({ input: { monthId, ...data } }) => {
@@ -56,13 +57,12 @@ export default trpc
 			if (!isIncome && data.value !== undefined) {
 				data.value = Math.abs(data.value);
 			}
-			console.log(data.value);
 			// create expense
 			let expData = {
 				defaultValue: data.value,
 				description: data.description,
 				categoryId: data.categoryId,
-				paymentType: PaymentTypes.NORMAL,
+				paymentType: data.paymentType,
 				active: false,
 				isIncome: isIncome,
 				repeatingMonths: 0
@@ -108,9 +108,6 @@ export default trpc
 			const expenses = await prismaClient.expense.findMany({
 				where: { months: { some: { id } } }
 			});
-
-			console.log(expenses.length);
-			console.log(expenses.map((exp) => exp.defaultValue));
 
 			let expenseValues = expenses.map((exp) => ({
 				comment: '',

@@ -62,7 +62,6 @@
 	});
 
 	const createExpenseValue = async () => {
-		console.log('creating...');
 		let response = await trpc().mutation('expensevalues:create', {
 			value: currentValue.length > 0 ? currentValue : undefined,
 			comment: currentComment,
@@ -93,7 +92,6 @@
 	};
 
 	const saveOrUpdateExpenseValue = async () => {
-		console.log('entering save or update...');
 		editorErrors = undefined;
 		isSaving = true;
 		await tick();

@@ -93,8 +93,6 @@
 			return false;
 		});
 
-		console.log({ results });
-
 		return results.slice(-5);
 	};
 

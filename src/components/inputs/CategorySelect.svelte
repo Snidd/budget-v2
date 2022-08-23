@@ -29,7 +29,6 @@
 			categories = await trpc().query('categories:list', isIncome);
 		}
 		await tick();
-		console.log(existingCategoryId);
 		value = existingCategoryId;
 		loading = false;
 	};

@@ -12,12 +12,18 @@
 	import AddIcon from '$components/icons/AddIcon.svelte';
 	import ModalDialog from '$components/ModalDialog.svelte';
 	import TextInput from '$components/inputs/TextInput.svelte';
-	import { PaymentTypes } from '$lib/model/PaymentTypes';
+	import {
+		incomePaymentTypeSelect,
+		onetimePaymentTypeSelect,
+		PaymentTypes,
+		paymentTypeSelect
+	} from '$lib/model/PaymentTypes';
 	import NumberInput from '$components/inputs/NumberInput.svelte';
 	import CategorySelect from '$components/inputs/CategorySelect.svelte';
 	import EditIcon from '$components/icons/EditIcon.svelte';
 	import MonthSummary from './MonthSummary.svelte';
 	import PaymentTypeSummary from './PaymentTypeSummary.svelte';
+	import SelectInput from '$components/inputs/SelectInput.svelte';
 
 	type Expense = InferMutationInput<'incomes:save'>;
 	type ExpenseValue = InferMutationInput<'expensevalues:create'>;
@@ -97,8 +103,10 @@
 				categoryId: expense.categoryId,
 				description: expense.description,
 				monthId: month.id,
+				paymentType: expense.paymentType,
 				value: expense.defaultValue !== undefined ? Number(expense.defaultValue) : undefined
 			});
+			expense = newExpense();
 			showAddDialog = false;
 			reloadExpenses();
 		} catch (err) {
@@ -181,6 +189,13 @@
 			suffix="SEK"
 			required={false}
 			error={editorErrors?.defaultValue}
+		/>
+		<SelectInput
+			label="Betalningsmetod"
+			required={true}
+			values={onetimePaymentTypeSelect}
+			bind:value={expense.paymentType}
+			error={editorErrors?.paymentType}
 		/>
 		<CategorySelect
 			label="Kategori"

@@ -125,8 +125,6 @@
 	};
 
 	$: changeOrderUrl(selectedOrder);
-
-	$: console.log(expenses);
 </script>
 
 <LoadingWithErrors {loading} {errors}>

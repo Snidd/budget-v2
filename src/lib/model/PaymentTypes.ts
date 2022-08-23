@@ -4,7 +4,8 @@ export enum PaymentTypes {
 	AUTO,
 	INCOME_AUTO,
 	INCOME_SWISH,
-	INCOME_REFUND
+	INCOME_REFUND,
+	KLARNA
 }
 
 export interface SelectElements {
@@ -26,6 +27,8 @@ export const getPaymentTypeString = (paymentType: PaymentTypes) => {
 			return 'Swish';
 		case PaymentTypes.INCOME_REFUND:
 			return 'Återbetalning';
+		case PaymentTypes.KLARNA:
+			return 'Klarna';
 		default:
 			return 'Okänt';
 	}
@@ -43,6 +46,10 @@ export const paymentTypeSelect: SelectElements[] = [
 	{
 		value: 2,
 		name: 'Automatisk - konto'
+	},
+	{
+		value: 6,
+		name: 'Manuell - Klarna'
 	}
 ];
 
@@ -58,5 +65,24 @@ export const incomePaymentTypeSelect: SelectElements[] = [
 	{
 		value: 5,
 		name: 'Återbetalning'
+	}
+];
+
+export const onetimePaymentTypeSelect: SelectElements[] = [
+	{
+		value: 0,
+		name: 'Manuell'
+	},
+	{
+		value: 3,
+		name: 'Automatisk'
+	},
+	{
+		value: 1,
+		name: 'remember'
+	},
+	{
+		value: 6,
+		name: 'Klarna'
 	}
 ];
