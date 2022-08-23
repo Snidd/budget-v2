@@ -17,6 +17,7 @@
 	import CategorySelect from '$components/inputs/CategorySelect.svelte';
 	import EditIcon from '$components/icons/EditIcon.svelte';
 	import MonthSummary from './MonthSummary.svelte';
+	import PaymentTypeSummary from './PaymentTypeSummary.svelte';
 
 	type Expense = InferMutationInput<'incomes:save'>;
 	type ExpenseValue = InferMutationInput<'expensevalues:create'>;

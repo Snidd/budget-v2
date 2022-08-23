@@ -4,6 +4,8 @@
 	import { formatMonth, formatSEK } from '$lib/utils';
 	import Decimal from 'decimal.js';
 	import { months } from '$lib/stores/months';
+	import PaymentTypeSummary from './PaymentTypeSummary.svelte';
+	import { compareAsc } from 'date-fns';
 	type Expenses = InferQueryOutput<'expenses:listByMonth'>;
 
 	export let expenses: Expenses;
@@ -12,7 +14,6 @@
 	const getCategories = (expensesList: Expenses) => {
 		const categoryNames = expensesList.map((expense) => expense.category.name);
 		const uniqueNames = [...new Set(categoryNames)];
-		console.log({ uniqueNames });
 
 		const categories = uniqueNames.map((name) => {
 			let expenseWithCategory = expensesList.find((exp) => exp.category.name === name);
@@ -24,7 +25,6 @@
 				};
 			return expenseWithCategory.category;
 		});
-		console.log(categories);
 		return categories;
 	};
 
@@ -79,10 +79,26 @@
 
 	$: total = getTotalFromSums(categoriesWithSum);
 
-	$: lastFiveMonths = $months.slice(
-		$months.length - 5 > 0 ? $months.length : 0,
-		$months.length - 1
-	);
+	const getLastFiveMonths = (currentId: number) => {
+		const currentMonth = $months.find((m) => m.id === currentId);
+		if (currentMonth === undefined) return [];
+		const currentDate = new Date(currentMonth.year, currentMonth.month, 1);
+
+		const results = $months.filter((m) => {
+			if (m.id === currentId) return false;
+			const compareDate = new Date(m.year, m.month, 1);
+			if (compareAsc(currentDate, compareDate) > -1) {
+				return true;
+			}
+			return false;
+		});
+
+		console.log({ results });
+
+		return results.slice(-5);
+	};
+
+	$: lastFiveMonths = getLastFiveMonths(monthId);
 </script>
 
 <div class="flex flex-col w-full border-opacity-50">
@@ -94,7 +110,7 @@
 				{#each lastFiveMonths as month}
 					<th>{formatMonth(month.year, month.month)}</th>
 				{/each}
-				<th>Summa</th>
+				<th>Summa denna månad</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -111,8 +127,9 @@
 							<td
 								>{category.isIncome ? '' : '-'}
 								{formatSEK(catWithSum.sum)}
-								{#if diff.greaterThan(0)}<span class="text-green-700">+{formatSEK(diff)}</span
-									>{:else if diff.lessThan(0)}<span class="text-red-600">{formatSEK(diff)}</span
+								{#if diff.greaterThan(0)}<span class="text-green-700">-{formatSEK(diff)}</span
+									>{:else if diff.lessThan(0)}<span class="text-red-600"
+										>+{formatSEK(diff.absoluteValue())}</span
 									>{/if}</td
 							>
 						{/if}
@@ -129,6 +146,7 @@
 				{/each}
 				<td class="bg-accent">{total > new Decimal(0) ? '+' : ''} {formatSEK(total)}</td>
 			</tr>
+			<PaymentTypeSummary {expenses} {monthId} {lastFiveMonths} />
 		</tbody>
 	</table>
 </div>

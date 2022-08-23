@@ -38,6 +38,17 @@
 	let monthsArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 	let year = [2022, 2023];
 
+	$: selectableMonths = getSelectableMonths(month.year);
+
+	const getSelectableMonths = (selectedYear: number) => {
+		const existingMonths = $months;
+		return monthsArray.filter(
+			(monthIndex) =>
+				existingMonths.find((exm) => exm.month === monthIndex && exm.year === selectedYear) ===
+				undefined
+		);
+	};
+
 	function capitalizeFirstLetter(string: string) {
 		return string.charAt(0).toUpperCase() + string.slice(1);
 	}
@@ -104,18 +115,6 @@
 <div class="flex flex-col gap-4">
 	<div class="flex gap-4">
 		<div class="form-control w-full max-w-xs">
-			<label class="label" for="monthSelector">
-				<span class="label-text">Månad</span>
-			</label>
-			<select id="monthSelector" class="select select-bordered" bind:value={month.month}>
-				<option disabled value={-1}>Välj månad</option>
-				{#each monthsArray as value, index}
-					<option {value}>{monthNames[index]}</option>
-				{/each}
-			</select>
-		</div>
-
-		<div class="form-control w-full max-w-xs">
 			<label class="label" for="yearSelector">
 				<span class="label-text">År</span>
 			</label>
@@ -123,6 +122,18 @@
 				<option disabled value={-1}>Välj år</option>
 				{#each year as value, index}
 					<option {value}>{value}</option>
+				{/each}
+			</select>
+		</div>
+
+		<div class="form-control w-full max-w-xs">
+			<label class="label" for="monthSelector">
+				<span class="label-text">Månad</span>
+			</label>
+			<select id="monthSelector" class="select select-bordered" bind:value={month.month}>
+				<option disabled value={-1}>Välj månad</option>
+				{#each selectableMonths as value, index}
+					<option {value}>{monthNames[value]}</option>
 				{/each}
 			</select>
 		</div>
