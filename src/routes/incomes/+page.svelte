@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/env';
-	import { goto } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import ExpenseCard from '$components/ExpenseCard.svelte';
 	import ExpenseGroup from '$components/ExpenseGroup.svelte';
 	import AddIcon from '$components/icons/AddIcon.svelte';
@@ -61,7 +61,7 @@
 
 	const reloadExpenses = async () => {
 		loading = true;
-		expenses = await trpc().query('incomes:list', orderBy as ExpenseInput);
+		await invalidate();
 		loading = false;
 	};
 

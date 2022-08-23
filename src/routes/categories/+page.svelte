@@ -12,6 +12,7 @@
 	import CategoriesTable from './CategoriesTable.svelte';
 	import CheckboxInput from '$components/inputs/CheckboxInput.svelte';
 	import ColorInput from '$components/inputs/ColorInput.svelte';
+	import { invalidate } from '$app/navigation';
 
 	export let data: PageData;
 	export let errors: Errors;
@@ -36,8 +37,7 @@
 
 	const reloadCategories = async () => {
 		loading = true;
-		incomeCategories = await trpc(fetch).query('categories:list', true);
-		expenseCategories = await trpc(fetch).query('categories:list', false);
+		await invalidate();
 		loading = false;
 	};
 
