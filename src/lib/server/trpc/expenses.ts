@@ -34,7 +34,7 @@ const selectObject = {
 };
 
 export default trpc
-	.router()
+	.router<{ req: Request; locals: App.Locals }>()
 	.query('list', {
 		input: z.enum([
 			'description',

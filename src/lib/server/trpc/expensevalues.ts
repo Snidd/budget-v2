@@ -4,7 +4,7 @@ import * as trpc from '@trpc/server';
 import { z } from 'zod';
 
 export default trpc
-	.router()
+	.router<{ req: Request; locals: App.Locals }>()
 	.query('listByMonthId', {
 		input: z.number().or(z.string().regex(/^\d+$/).transform(Number)),
 		resolve: ({ input }) =>

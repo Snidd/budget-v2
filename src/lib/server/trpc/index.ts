@@ -6,11 +6,19 @@ import expenses from './expenses';
 import expensevalues from './expensevalues';
 import incomes from './incomes';
 import months from './months';
+import type { RequestEvent } from '@sveltejs/kit';
 
-export const createContext = async () => ({});
+export const createContext = async ({ request, locals }: RequestEvent) => {
+	return {
+		req: request,
+		locals
+	};
+};
+
+export type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
 export const router = trpc
-	.router<inferAsyncReturnType<typeof createContext>>()
+	.router<Context>()
 	.transformer(trpcTransformer)
 	.merge('expenses:', expenses)
 	.merge('incomes:', incomes)

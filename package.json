@@ -38,6 +38,8 @@
 	"type": "module",
 	"dependencies": {
 		"@prisma/client": "^4.2.1",
+		"@supabase/auth-helpers-svelte": "^0.4.5",
+		"@supabase/auth-helpers-sveltekit": "^0.6.10",
 		"@tanstack/svelte-table": "^8.5.11",
 		"@trpc/client": "^9.27.0",
 		"@trpc/server": "^9.27.0",

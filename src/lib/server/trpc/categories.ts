@@ -2,9 +2,11 @@ import prismaClient from '$lib/server/prismaClient';
 import { trim } from '$lib/zodTransformer';
 import * as trpc from '@trpc/server';
 import { z } from 'zod';
+import { authMiddleware } from './authMiddleware';
 
 export default trpc
-	.router()
+	.router<{ req: Request; locals: App.Locals }>()
+	.middleware(authMiddleware)
 	.query('list', {
 		input: z.boolean().default(false).optional(),
 		resolve: ({ input }) =>

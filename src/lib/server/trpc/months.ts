@@ -6,7 +6,7 @@ import * as trpc from '@trpc/server';
 import { z } from 'zod';
 
 export default trpc
-	.router()
+	.router<{ req: Request; locals: App.Locals }>()
 	.query('list', {
 		resolve: () =>
 			prismaClient.month.findMany({
