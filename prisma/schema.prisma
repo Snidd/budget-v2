@@ -1,15 +1,18 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./budget.db"
+  provider             = "mysql"
+  //url      = "file:./budget.db"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 model Expense {
   id              Int            @id @default(autoincrement())
-  description     String
+  description     String         @db.Text
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   categoryId      Int
@@ -22,13 +25,15 @@ model Expense {
   repeatingMonths Int            @default(0)
   months          Month[]
   expenseValue    ExpenseValue[]
+
+  @@index([categoryId])
 }
 
 model Month {
   id       Int            @id @default(autoincrement())
   month    Int
   year     Int
-  comment  String         @default("")
+  comment  String         @default("") @db.Text
   values   ExpenseValue[]
   expenses Expense[]
 
@@ -38,7 +43,7 @@ model Month {
 
 model ExpenseValue {
   id        Int      @id @default(autoincrement())
-  comment   String   @default("")
+  comment   String   @default("") @db.Text
   value     Decimal?
   month     Month?   @relation(fields: [monthId], references: [id])
   monthId   Int?
@@ -46,6 +51,8 @@ model ExpenseValue {
   expenseId Int
 
   @@unique([monthId, expenseId])
+  @@index([monthId])
+  @@index([expenseId])
 }
 
 model Category {
@@ -55,4 +62,23 @@ model Category {
   isIncome Boolean   @default(false)
   color    String    @default("rgb(31, 41, 55)")
   expenses Expense[]
+}
+
+model User {
+  id               String         @id @unique
+  identifier_token String         @unique
+  hashed_password  String?
+  RefreshToken     RefreshToken[]
+
+  @@map("user")
+}
+
+model RefreshToken {
+  id            Int    @id @unique @default(autoincrement())
+  refresh_token String @unique @db.VarChar(300)
+  user          User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  user_id       String
+
+  @@index([user_id])
+  @@map("refresh_token")
 }
