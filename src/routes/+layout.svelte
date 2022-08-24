@@ -30,7 +30,7 @@
 	<SupaAuthHelper {supabaseClient} {session}>
 		<div class="flex">
 			<div class="p-2 py-10">
-				<Menu months={$months} user={$session?.user} />
+				<Menu months={$months} />
 			</div>
 			<div class="py-10">
 				{#if $navigating}

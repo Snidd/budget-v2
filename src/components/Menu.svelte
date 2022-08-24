@@ -10,11 +10,8 @@
 	type MonthOutput = InferQueryOutput<'months:list'>;
 
 	export let months: MonthOutput;
-	export let user: unknown | undefined;
 
 	const session = getContext<Writable<Session>>('session');
-
-	$: console.log(`menu user: ${user}`);
 </script>
 
 <div class="w-36">

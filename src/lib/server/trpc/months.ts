@@ -4,9 +4,11 @@ import { trim } from '$lib/zodTransformer';
 import { prisma } from '@prisma/client';
 import * as trpc from '@trpc/server';
 import { z } from 'zod';
+import type { Context } from '.';
+import { authMiddleware } from './authMiddleware';
 
 export default trpc
-	.router<{ req: Request; locals: App.Locals }>()
+	.router<Context>()
 	.query('list', {
 		resolve: () =>
 			prismaClient.month.findMany({
@@ -19,6 +21,7 @@ export default trpc
 				orderBy: [{ year: 'asc' }, { month: 'asc' }]
 			})
 	})
+	.middleware(authMiddleware)
 	.query('getByMonthAndYear', {
 		input: z.object({
 			year: z.number().or(z.string().regex(/^\d+$/).transform(Number)),

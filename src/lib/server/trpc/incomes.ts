@@ -6,6 +6,8 @@ import * as trpc from '@trpc/server';
 import Decimal from 'decimal.js';
 import { string, z } from 'zod';
 import categories from './categories';
+import type { Context } from '.';
+import { authMiddleware } from './authMiddleware';
 
 const dateSchema = z.preprocess((arg) => {
 	if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
@@ -34,7 +36,8 @@ const selectObject = {
 };
 
 export default trpc
-	.router<{ req: Request; locals: App.Locals }>()
+	.router<Context>()
+	.middleware(authMiddleware)
 	.query('list', {
 		input: z.enum([
 			'description',

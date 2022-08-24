@@ -7,6 +7,8 @@ import Decimal from 'decimal.js';
 import { string, z } from 'zod';
 import categories from './categories';
 import { ca } from 'date-fns/locale';
+import { authMiddleware } from './authMiddleware';
+import type { Context } from '.';
 
 const dateSchema = z.preprocess((arg) => {
 	if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
@@ -34,7 +36,8 @@ const selectObject = {
 };
 
 export default trpc
-	.router<{ req: Request; locals: App.Locals }>()
+	.router<Context>()
+	.middleware(authMiddleware)
 	.query('list', {
 		input: z.enum([
 			'description',
