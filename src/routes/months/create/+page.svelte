@@ -15,7 +15,6 @@
 	import { months } from '$lib/stores/months';
 
 	export let data: PageData;
-	export let errors: Errors;
 
 	type Month = InferMutationInput<'months:save'>;
 	type Expenses = InferQueryOutput<'expenses:listAll'>;

@@ -15,7 +15,6 @@
 	import { invalidate } from '$app/navigation';
 
 	export let data: PageData;
-	export let errors: Errors;
 
 	type Category = InferMutationInput<'categories:save'>;
 
