@@ -5,12 +5,20 @@ import type { CreateContextFn } from 'trpc-sveltekit/dist/types';
 import type { Router } from '@trpc/server/dist/declarations/src/router';
 
 export const context = async (event: any) => {
-	const user = await auth.validateRequest(event.request);
-
-	return {
-		event,
-		user
-	};
+	console.log('authenticating request');
+	try {
+		const user = await auth.validateRequest(event.request);
+		console.log({ user });
+		return {
+			event,
+			user
+		};
+	} catch (err) {
+		return {
+			event,
+			user: undefined
+		};
+	}
 };
 
 export type Context = inferAsyncReturnType<typeof context>;

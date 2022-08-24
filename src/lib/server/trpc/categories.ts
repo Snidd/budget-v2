@@ -1,7 +1,9 @@
 import prismaClient from '$lib/server/prismaClient';
 import { trim } from '$lib/zodTransformer';
 import * as trpc from '@trpc/server';
+import { TRPCError, type inferAsyncReturnType } from '@trpc/server';
 import { z } from 'zod';
+import type { context, Context } from './context';
 
 export default trpc
 	.router()

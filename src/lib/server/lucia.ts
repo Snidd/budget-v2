@@ -1,9 +1,7 @@
 import lucia from 'lucia-sveltekit';
 import prisma from '@lucia-sveltekit/adapter-prisma';
-import { PrismaClient } from '@prisma/client';
+import client from './prismaClient';
 import { dev } from '$app/env';
-
-const client = new PrismaClient();
 
 export const auth = lucia({
 	adapter: prisma(client),
