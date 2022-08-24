@@ -1,5 +1,6 @@
 import { browser } from '$app/env';
 import type { Router } from '$lib/server/trpc';
+import { createContext } from '$lib/server/trpc';
 import * as trpc from '@trpc/client';
 import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
 import trpcTransformer from 'trpc-transformer';
@@ -9,7 +10,13 @@ const url = browser ? '/trpc' : 'http://localhost:3000/trpc';
 export default (loadFetch?: any) =>
 	trpc.createTRPCClient<Router>({
 		url: loadFetch ? '/trpc' : url,
+		createContext,
 		transformer: trpcTransformer,
+		headers() {
+			return {
+				Authorization: 'token'
+			};
+		},
 		...(loadFetch && { fetch: loadFetch })
 	});
 

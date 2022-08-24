@@ -1,14 +1,21 @@
 import { createContext, router } from '$lib/server/trpc';
 import { createTRPCHandle } from 'trpc-sveltekit';
 import type { Handle } from '@sveltejs/kit';
+import { auth } from '$lib/server/lucia';
 
-export const handle: Handle = async ({ event, resolve }) => {
+import { sequence } from '@sveltejs/kit/hooks';
+
+const second: Handle = async ({ event, resolve }) => {
 	const response = await createTRPCHandle({
 		router,
-		createContext,
+		createContext: createContext,
 		event,
 		resolve
 	});
 
 	return response;
 };
+
+const first = auth.handleAuth;
+
+export const handle = sequence(first, second);

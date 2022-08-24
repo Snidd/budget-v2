@@ -6,11 +6,12 @@ import expenses from './expenses';
 import expensevalues from './expensevalues';
 import incomes from './incomes';
 import months from './months';
+import { context } from './context';
 
-export const createContext = async () => ({});
+export const createContext = context;
 
 export const router = trpc
-	.router<inferAsyncReturnType<typeof createContext>>()
+	.router<inferAsyncReturnType<typeof context>>()
 	.transformer(trpcTransformer)
 	.merge('expenses:', expenses)
 	.merge('incomes:', incomes)
