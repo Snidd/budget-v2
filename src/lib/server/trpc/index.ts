@@ -7,6 +7,7 @@ import expensevalues from './expensevalues';
 import incomes from './incomes';
 import months from './months';
 import type { RequestEvent } from '@sveltejs/kit';
+import user from './user';
 
 export const createContext = async ({ request, locals }: RequestEvent) => {
 	return {
@@ -24,6 +25,7 @@ export const router = trpc
 	.merge('incomes:', incomes)
 	.merge('months:', months)
 	.merge('expensevalues:', expensevalues)
-	.merge('categories:', categories);
+	.merge('categories:', categories)
+	.merge('user:', user);
 
 export type Router = typeof router;

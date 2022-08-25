@@ -7,9 +7,10 @@ type MonthOutput = InferQueryOutput<'months:list'>;
 
 export const load: LayoutLoad = async ({ fetch, url }) => {
 	try {
+		const currentUser = await trpc(fetch).query('user:get');
 		const months = await trpc(fetch).query('months:list');
-		return { months: months };
+		return { months: months, currentUser };
 	} catch (err) {
-		throw error(500, String(err));
+		return { months: [], currentUser: undefined };
 	}
 };

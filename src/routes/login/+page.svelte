@@ -10,6 +10,10 @@
 	import { supabaseClient } from '$lib/supabase';
 	import PasswordInput from '$components/inputs/PasswordInput.svelte';
 	import TextInput from '$components/inputs/TextInput.svelte';
+	import type { PageData } from './$types';
+	import { signedIn } from '$lib/stores/signedIn';
+
+	export let data: PageData;
 
 	let email: string;
 	let password: string;
@@ -83,25 +87,32 @@
 	}
 </script>
 
-{#if $session?.user}
+{#if $session?.user || $signedIn}
 	<a class="btn btn-secondary" href="/api/auth/logout">Logout</a>
 {:else}
-	<div class="flex flex-col">
-		<TextInput
-			error={undefined}
-			label="Email"
-			placeholder="test@email.com"
-			required={true}
-			bind:value={email}
-		/>
-		<PasswordInput
-			error={undefined}
-			label="Password"
-			placeholder="****"
-			required={true}
-			bind:value={password}
-		/>
-		<button class="btn btn-primary mt-4" on:click={signin}>Login</button>
-		<button class="btn btn-secondary mt-4" on:click={signup}>Sign up</button>
-	</div>
+	<form
+		on:submit={(event) => {
+			event.preventDefault();
+			signin();
+		}}
+	>
+		<div class="flex flex-col">
+			<TextInput
+				error={undefined}
+				label="Email"
+				placeholder="test@email.com"
+				required={true}
+				bind:value={email}
+			/>
+			<PasswordInput
+				error={undefined}
+				label="Password"
+				placeholder="****"
+				required={true}
+				bind:value={password}
+			/>
+			<button class="btn btn-primary mt-4" on:click={signin}>Logga in</button>
+			<button class="btn btn-secondary mt-4" on:click={signup}>Sign up</button>
+		</div>
+	</form>
 {/if}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { InferQueryOutput } from '$lib/client/trpc';
+	import { signedIn } from '$lib/stores/signedIn';
 	import { formatMonth } from '$lib/utils';
 
 	import type { Session } from '@supabase/auth-helpers-svelte';
@@ -19,7 +20,7 @@
 		<li class="menu-title">
 			<span>Main</span>
 		</li>
-		{#if $session?.user}
+		{#if $session?.user || $signedIn}
 			<li><a href="/api/auth/logout">Logga ut</a></li>
 		{:else}
 			<li><a href="/login">Logga in</a></li>
