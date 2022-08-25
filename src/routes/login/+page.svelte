@@ -13,8 +13,6 @@
 	import type { PageData } from './$types';
 	import { signedIn } from '$lib/stores/signedIn';
 
-	export let data: PageData;
-
 	let email: string;
 	let password: string;
 

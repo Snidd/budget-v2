@@ -31,7 +31,6 @@
 	type Category = InferMutationInput<'categories:save'>;
 
 	export let data: PageData;
-	export let errors: Errors;
 
 	$: ({ month, expenses } = data);
 
