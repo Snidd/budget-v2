@@ -7,7 +7,17 @@
 	import trpc from '$lib/client/trpc';
 	import { months } from '$lib/stores/months';
 
+	import { supabaseClient } from '$lib/supabase';
+	import { SupaAuthHelper, type Session } from '@supabase/auth-helpers-svelte';
+	import { page } from '$app/stores';
+
 	export let data: LayoutData;
+
+	import { writable, type Writable } from 'svelte/store';
+	import { getContext, setContext } from 'svelte';
+
+	setContext('session', writable<Session>($page.data.session));
+	const session = getContext<Writable<Session>>('session');
 
 	months.set(data.months);
 </script>
@@ -16,14 +26,18 @@
 	<title>Snickis Budget</title>
 </svelte:head>
 
-<div class="flex">
-	<div class="p-2 py-10">
-		<Menu months={$months} />
-	</div>
-	<div class="py-10">
-		{#if $navigating}
-			<div class="absolute left-36 top-4"><SpinnerIcon /></div>
-		{/if}
-		<slot />
-	</div>
-</div>
+{#if supabaseClient}
+	<SupaAuthHelper {supabaseClient} {session}>
+		<div class="flex">
+			<div class="p-2 py-10">
+				<Menu months={$months} />
+			</div>
+			<div class="py-10">
+				{#if $navigating}
+					<div class="absolute left-36 top-4"><SpinnerIcon /></div>
+				{/if}
+				<slot />
+			</div>
+		</div>
+	</SupaAuthHelper>
+{/if}

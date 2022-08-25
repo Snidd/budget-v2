@@ -1,6 +1,9 @@
 {
 	"name": "budget-app-v2",
 	"version": "1.0.0",
+	"prisma": {
+		"seed": "ts-node-esm prisma/seed.ts"
+	},
 	"scripts": {
 		"db-push": "prisma db push",
 		"db-studio": "prisma studio",
@@ -17,8 +20,9 @@
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
-		"@typescript-eslint/eslint-plugin": "^5.33.1",
-		"@typescript-eslint/parser": "^5.33.1",
+		"@types/node": "^18.7.13",
+		"@typescript-eslint/eslint-plugin": "^5.35.1",
+		"@typescript-eslint/parser": "^5.35.1",
 		"autoprefixer": "^10.4.8",
 		"eslint": "^8.22.0",
 		"eslint-config-prettier": "^8.5.0",
@@ -28,24 +32,27 @@
 		"prettier-plugin-svelte": "^2.7.0",
 		"prisma": "^4.2.1",
 		"svelte": "^3.49.0",
-		"svelte-check": "^2.8.0",
+		"svelte-check": "^2.8.1",
 		"svelte-preprocess": "^4.10.7",
 		"tailwindcss": "^3.1.8",
+		"ts-node": "^10.9.1",
 		"tslib": "^2.4.0",
 		"typescript": "^4.7.4",
-		"vite": "^3.0.8"
+		"vite": "^3.0.9"
 	},
 	"type": "module",
 	"dependencies": {
 		"@prisma/client": "^4.2.1",
+		"@supabase/auth-helpers-svelte": "^0.4.5",
+		"@supabase/auth-helpers-sveltekit": "^0.6.10",
 		"@tanstack/svelte-table": "^8.5.11",
-		"@trpc/client": "^9.27.0",
-		"@trpc/server": "^9.27.0",
+		"@trpc/client": "^9.27.2",
+		"@trpc/server": "^9.27.2",
 		"daisyui": "^2.24.0",
-		"date-fns": "^2.29.1",
+		"date-fns": "^2.29.2",
 		"decimal.js": "^10.4.0",
 		"trpc-sveltekit": "^2.3.0",
-		"trpc-transformer": "^2.0.4",
+		"trpc-transformer": "^2.1.0",
 		"zod": "^3.18.0"
 	}
 }

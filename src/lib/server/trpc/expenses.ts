@@ -7,6 +7,8 @@ import Decimal from 'decimal.js';
 import { string, z } from 'zod';
 import categories from './categories';
 import { ca } from 'date-fns/locale';
+import { authMiddleware } from './authMiddleware';
+import type { Context } from '.';
 
 const dateSchema = z.preprocess((arg) => {
 	if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
@@ -34,7 +36,8 @@ const selectObject = {
 };
 
 export default trpc
-	.router()
+	.router<Context>()
+	.middleware(authMiddleware)
 	.query('list', {
 		input: z.enum([
 			'description',
@@ -76,6 +79,7 @@ export default trpc
 						include: { month: true }
 					}
 				},
+				where: { active: true },
 				orderBy: [{ isIncome: 'asc' }, { category: { name: 'asc' } }]
 			})
 	})
@@ -158,12 +162,13 @@ export default trpc
 	.mutation('delete', {
 		input: z.number(),
 		resolve: async ({ input: id }) => {
-			await prismaClient.expenseValue.deleteMany({
+			await prismaClient.expense.update({
+				data: { active: false },
 				where: {
-					expenseId: id
+					id
 				}
 			});
 
-			return await prismaClient.expense.delete({ where: { id } }).then(() => undefined);
+			return undefined;
 		}
 	});

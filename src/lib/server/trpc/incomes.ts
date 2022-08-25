@@ -6,6 +6,8 @@ import * as trpc from '@trpc/server';
 import Decimal from 'decimal.js';
 import { string, z } from 'zod';
 import categories from './categories';
+import type { Context } from '.';
+import { authMiddleware } from './authMiddleware';
 
 const dateSchema = z.preprocess((arg) => {
 	if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
@@ -34,7 +36,8 @@ const selectObject = {
 };
 
 export default trpc
-	.router()
+	.router<Context>()
+	.middleware(authMiddleware)
 	.query('list', {
 		input: z.enum([
 			'description',
@@ -115,5 +118,6 @@ export default trpc
 	})
 	.mutation('delete', {
 		input: z.number(),
-		resolve: ({ input: id }) => prismaClient.expense.delete({ where: { id } }).then(() => undefined)
+		resolve: ({ input: id }) =>
+			prismaClient.expense.update({ data: { active: false }, where: { id } }).then(() => undefined)
 	});

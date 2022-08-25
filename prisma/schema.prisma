@@ -1,13 +1,11 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider             = "mysql"
+  provider = "postgresql"
   //url      = "file:./budget.db"
-  url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  url      = env("DATABASE_URL")
 }
 
 model Expense {
@@ -25,8 +23,6 @@ model Expense {
   repeatingMonths Int            @default(0)
   months          Month[]
   expenseValue    ExpenseValue[]
-
-  @@index([categoryId])
 }
 
 model Month {
@@ -51,8 +47,6 @@ model ExpenseValue {
   expenseId Int
 
   @@unique([monthId, expenseId])
-  @@index([monthId])
-  @@index([expenseId])
 }
 
 model Category {
@@ -79,6 +73,5 @@ model RefreshToken {
   user          User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
   user_id       String
 
-  @@index([user_id])
   @@map("refresh_token")
 }
