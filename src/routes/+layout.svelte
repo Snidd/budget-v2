@@ -13,8 +13,13 @@
 
 	export let data: LayoutData;
 
+	$: ({ currentUser } = data);
+
+	$: signedIn.set(currentUser !== undefined);
+
 	import { writable, type Writable } from 'svelte/store';
 	import { getContext, setContext } from 'svelte';
+	import { signedIn } from '$lib/stores/signedIn';
 
 	setContext('session', writable<Session>($page.data.session));
 	const session = getContext<Writable<Session>>('session');

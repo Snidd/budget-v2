@@ -19,6 +19,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-vercel": "next",
 		"@sveltejs/kit": "next",
 		"@types/node": "^18.7.13",
 		"@typescript-eslint/eslint-plugin": "^5.35.1",
