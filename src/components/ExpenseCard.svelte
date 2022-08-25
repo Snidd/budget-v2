@@ -10,7 +10,7 @@
 	import { formatMonthDistance, formatSEK } from '$lib/utils';
 	import CategoryBadge from './badges/CategoryBadge.svelte';
 	import EditIcon from './icons/EditIcon.svelte';
-	import sv from 'date-fns/locale/sv';
+	import sv from 'date-fns/locale/sv/index.js';
 
 	type Expense = InferQueryOutput<'expenses:getById'>;
 

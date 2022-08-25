@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import sv from 'date-fns/locale/sv';
+import sv from 'date-fns/locale/sv/index.js';
 
 export const formatMonth = (year: number | undefined, month: number | undefined): string => {
 	if (year === undefined || month === undefined) return '';
