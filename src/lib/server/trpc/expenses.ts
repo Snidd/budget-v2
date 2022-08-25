@@ -1,14 +1,13 @@
 import { PaymentTypes } from '$lib/model/PaymentTypes';
 import prismaClient from '$lib/server/prismaClient';
+import { trim } from '$lib/zodTransformer';
 import type { Prisma } from '@prisma/client';
-import { falsyToNull, trim } from '$lib/zodTransformer';
 import * as trpc from '@trpc/server';
 import Decimal from 'decimal.js';
-import { string, z } from 'zod';
-import categories from './categories';
-import { ca } from 'date-fns/locale';
-import { authMiddleware } from './authMiddleware';
+import { z } from 'zod';
+
 import type { Context } from '.';
+import { authMiddleware } from './authMiddleware';
 
 const dateSchema = z.preprocess((arg) => {
 	if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);

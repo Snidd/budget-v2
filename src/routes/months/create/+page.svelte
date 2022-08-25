@@ -2,7 +2,7 @@
 	import trpc from '$lib/client/trpc';
 
 	import { differenceInCalendarMonths, format } from 'date-fns';
-	import { sv } from 'date-fns/locale';
+	import sv from 'date-fns/locale/sv';
 	import type { Errors, PageData } from './$types';
 	import type { InferMutationInput, InferQueryInput, InferQueryOutput } from '$lib/client/trpc';
 	import { expenseValueSorter, formatMonthDistance, formatSEK } from '$lib/utils';
