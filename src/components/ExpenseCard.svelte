@@ -4,13 +4,13 @@
 	import { createEventDispatcher } from 'svelte';
 	import DeleteIcon from './icons/DeleteIcon.svelte';
 	import SpinnerIcon from './icons/SpinnerIcon.svelte';
-	import sv from 'date-fns/locale/index.js';
 	import { format, formatDistance } from 'date-fns';
 	import { getPaymentTypeString } from '$lib/model/PaymentTypes';
 	import PaymentTypeBadge from './badges/PaymentTypeBadge.svelte';
 	import { formatMonthDistance, formatSEK } from '$lib/utils';
 	import CategoryBadge from './badges/CategoryBadge.svelte';
 	import EditIcon from './icons/EditIcon.svelte';
+	import sv from 'date-fns/locale/sv';
 
 	type Expense = InferQueryOutput<'expenses:getById'>;
 
