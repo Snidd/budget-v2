@@ -4,7 +4,11 @@ import * as trpc from '@trpc/client';
 import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
 import trpcTransformer from 'trpc-transformer';
 
-const url = browser ? '/trpc' : 'http://localhost:3000/trpc';
+const rootUrl = import.meta.env.VITE_VERCEL_URL
+	? process.env.VITE_VERCEL_URL + '/trpc'
+	: 'http://localhost:3000/trpc';
+
+const url = browser ? '/trpc' : rootUrl;
 
 export default (loadFetch?: any) =>
 	trpc.createTRPCClient<Router>({
