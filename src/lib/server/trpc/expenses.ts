@@ -79,6 +79,7 @@ export default trpc
 						include: { month: true }
 					}
 				},
+				where: { active: true },
 				orderBy: [{ isIncome: 'asc' }, { category: { name: 'asc' } }]
 			})
 	})
@@ -161,12 +162,13 @@ export default trpc
 	.mutation('delete', {
 		input: z.number(),
 		resolve: async ({ input: id }) => {
-			await prismaClient.expenseValue.deleteMany({
+			await prismaClient.expense.update({
+				data: { active: false },
 				where: {
-					expenseId: id
+					id
 				}
 			});
 
-			return await prismaClient.expense.delete({ where: { id } }).then(() => undefined);
+			return undefined;
 		}
 	});

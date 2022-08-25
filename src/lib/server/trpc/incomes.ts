@@ -118,5 +118,6 @@ export default trpc
 	})
 	.mutation('delete', {
 		input: z.number(),
-		resolve: ({ input: id }) => prismaClient.expense.delete({ where: { id } }).then(() => undefined)
+		resolve: ({ input: id }) =>
+			prismaClient.expense.update({ data: { active: false }, where: { id } }).then(() => undefined)
 	});
