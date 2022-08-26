@@ -5,8 +5,8 @@
 	import { expenseValueSorter, formatMonth, formatSEK } from '$lib/utils';
 	import { debounce } from '$lib/utils/debounce';
 	import type { Expense, Month } from '@prisma/client';
-	import { compareDesc } from 'date-fns';
-	import compareAsc from 'date-fns/compareAsc';
+	import compareDesc from 'date-fns/compareDesc/index.js';
+	import compareAsc from 'date-fns/compareAsc/index.js';
 	import { createEventDispatcher, onMount, tick } from 'svelte';
 	import ExpenseValueTable from './ExpenseValueTable.svelte';
 	import { fade } from 'svelte/transition';

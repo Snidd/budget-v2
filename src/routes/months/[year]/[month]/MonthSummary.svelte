@@ -5,7 +5,8 @@
 	import Decimal from 'decimal.js';
 	import { months } from '$lib/stores/months';
 	import PaymentTypeSummary from './PaymentTypeSummary.svelte';
-	import { compareAsc } from 'date-fns';
+	import compareAsc from 'date-fns/compareAsc/index.js';
+	import sv from 'date-fns/locale/sv/index.js';
 	type Expenses = InferQueryOutput<'expenses:listByMonth'>;
 
 	export let expenses: Expenses;
