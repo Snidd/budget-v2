@@ -12,6 +12,8 @@
 	import TextInput from '$components/inputs/TextInput.svelte';
 	import type { PageData } from './$types';
 	import { signedIn } from '$lib/stores/signedIn';
+	import { months } from '$lib/stores/months';
+	import trpc from '$lib/client/trpc';
 
 	let email: string;
 	let password: string;
@@ -45,6 +47,7 @@
 			} else {
 				// *** this is the key to avoid having to reload after login
 				await invalidate();
+				$months = await trpc().query('months:list');
 				// *** ^^^^
 				await goto('/expenses');
 			}

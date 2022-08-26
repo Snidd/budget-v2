@@ -52,7 +52,7 @@
 	};
 
 	const reloadExpenses = async () => {
-		expenses = await trpc(fetch).query('expenses:listByMonth', {
+		expenses = await trpc().query('expenses:listByMonth', {
 			month: month.month,
 			year: month.year
 		});

@@ -86,7 +86,7 @@
 			await trpc().mutation('months:save', month);
 			newMonth();
 
-			$months = await trpc(fetch).query('months:list');
+			$months = await trpc().query('months:list');
 			goto(`/months/${successYear}/${successMonth}`);
 		} catch (err) {
 			editorErrors = getEditorErrors(err as TRPCClientError<Router>);
