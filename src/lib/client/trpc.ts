@@ -3,6 +3,7 @@ import type { Router } from '$lib/server/trpc';
 import * as trpc from '@trpc/client';
 import type { inferProcedureInput, inferProcedureOutput } from '@trpc/server';
 import trpcTransformer from 'trpc-transformer';
+import type { LoadEvent } from '@sveltejs/kit';
 
 const getRootUrl = () => {
 	try {
@@ -17,11 +18,11 @@ const getRootUrl = () => {
 
 const url = browser ? '/trpc' : getRootUrl();
 
-export default (loadFetch?: any) =>
+export default (loadFetch?: LoadEvent['fetch']) =>
 	trpc.createTRPCClient<Router>({
 		url: loadFetch ? '/trpc' : url,
 		transformer: trpcTransformer,
-		...(loadFetch && { fetch: loadFetch })
+		...(loadFetch && { fetch: loadFetch as typeof fetch })
 	});
 
 type Query = keyof Router['_def']['queries'];
